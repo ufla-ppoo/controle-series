@@ -23,7 +23,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 /**
- * Classe que representa a tela Minhas Músicas
+ * Classe que representa a tela Minhas Séries
  *
  * @author Paulo Jr. e Julio Alves
  */
@@ -31,7 +31,7 @@ public class TelaMinhasSeries {
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
-    
+
     // componentes da tela
     private JDialog janela;
     private GridBagLayout layout;
@@ -136,9 +136,9 @@ public class TelaMinhasSeries {
     }
 
     /**
-     * Trata o estado da tela para seleção de músicas
+     * Trata o estado da tela para seleção de séries
      */
-    private void prepararComponentesEstadoSelecaoMusica() {
+    private void prepararComponentesEstadoSelecaoSerie() {
         txtTitulo.setEditable(false);
         txtNumTemporadas.setEditable(false);
         txtAno.setEditable(false);
@@ -153,9 +153,9 @@ public class TelaMinhasSeries {
     }
 
     /**
-     * Trata o estado da tela para cadastro de nova música
+     * Trata o estado da tela para cadastro de nova série
      */
-    private void prepararComponentesEstadoNovaMusica() {
+    private void prepararComponentesEstadoNovaSerie() {
         tbSeries.clearSelection();
         tbSeries.setEnabled(false);
 
@@ -179,9 +179,9 @@ public class TelaMinhasSeries {
     }
 
     /**
-     * Trata o estado da tela para cadastro música editada
+     * Trata o estado da tela para cadastro série editada
      */
-    private void prepararComponentesEstadoEditouMusica() {
+    private void prepararComponentesEstadoEditouSerie() {
         tbSeries.setEnabled(false);
 
         txtTitulo.setEditable(true);
@@ -208,7 +208,7 @@ public class TelaMinhasSeries {
                 GridBagConstraints.NONE,
                 0, 0, 4, 1);
 
-        lbTitulo = new JLabel(I18N.obterRotuloMusicaTitulo());
+        lbTitulo = new JLabel(I18N.obterRotuloSerieTitulo());
         adicionarComponente(lbTitulo,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
@@ -220,19 +220,19 @@ public class TelaMinhasSeries {
                 GridBagConstraints.HORIZONTAL,
                 1, 1, 3, 1);
 
-        lbNumTemporadas = new JLabel(I18N.obterRotuloMusicaArtista());
-        adicionarComponente(lbNumTemporadas,
+        lbGenero = new JLabel(I18N.obterRotuloSerieGenero());
+        adicionarComponente(lbGenero,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
                 2, 0, 1, 1);
 
-        txtNumTemporadas = new JTextField(25);
-        adicionarComponente(txtNumTemporadas,
+        txtGenero = new JTextField(25);
+        adicionarComponente(txtGenero,
                 GridBagConstraints.LINE_START,
                 GridBagConstraints.HORIZONTAL,
                 2, 1, 3, 1);
 
-        lbAno = new JLabel(I18N.obterRotuloMusicaAno());
+        lbAno = new JLabel(I18N.obterRotuloSerieAno());
         adicionarComponente(lbAno,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
@@ -244,19 +244,19 @@ public class TelaMinhasSeries {
                 GridBagConstraints.HORIZONTAL,
                 3, 1, 1, 1);
 
-        lbGenero = new JLabel(I18N.obterRotuloMusicaGenero());
-        adicionarComponente(lbGenero,
+        lbNumTemporadas = new JLabel(I18N.obterRotuloSerieNumTemporadas());
+        adicionarComponente(lbNumTemporadas,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
                 3, 2, 1, 1);
 
-        txtGenero = new JTextField(8);
-        adicionarComponente(txtGenero,
+        txtNumTemporadas = new JTextField(8);
+        adicionarComponente(txtNumTemporadas,
                 GridBagConstraints.LINE_START,
                 GridBagConstraints.HORIZONTAL,
                 3, 3, 1, 1);
 
-        lbElenco = new JLabel(I18N.obterRotuloMusicaLetra());
+        lbElenco = new JLabel(I18N.obterRotuloSerieElenco());
         adicionarComponente(lbElenco,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
@@ -301,9 +301,9 @@ public class TelaMinhasSeries {
     }
 
     /**
-     * Trata a selação de músicas na grade.
+     * Trata a selação de séries na grade.
      */
-    private void selecionouMusica() {
+    private void selecionouSerie() {
         // Dados "fake"
         String texto = String.format("Linha selecionada: %d", tbSeries.getSelectedRow());
         txtTitulo.setText(texto);
@@ -327,15 +327,15 @@ public class TelaMinhasSeries {
         tbSeries.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                prepararComponentesEstadoSelecaoMusica();
-                selecionouMusica();
+                prepararComponentesEstadoSelecaoSerie();
+                selecionouSerie();
             }
         });
 
         btnEditarSerie.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                prepararComponentesEstadoEditouMusica();
+                prepararComponentesEstadoEditouSerie();
             }
         });
 
@@ -349,7 +349,7 @@ public class TelaMinhasSeries {
         btnNovaSerie.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                prepararComponentesEstadoNovaMusica();
+                prepararComponentesEstadoNovaSerie();
             }
         });
 
@@ -357,7 +357,7 @@ public class TelaMinhasSeries {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Utilidades.msgConfirmacao(I18N.obterConfirmacaoDeletar())) {
-                    // Remover música!
+                    // Remover série!
                 }
             }
         });
@@ -368,7 +368,7 @@ public class TelaMinhasSeries {
      */
     private void construirTela() {
         janela = new JDialog();
-        janela.setTitle(I18N.obterTituloTelaMinhasMusicas());
+        janela.setTitle(I18N.obterTituloTelaMinhasSeries());
         layout = new GridBagLayout();
         gbc = new GridBagConstraints();
         janela.setLayout(layout);

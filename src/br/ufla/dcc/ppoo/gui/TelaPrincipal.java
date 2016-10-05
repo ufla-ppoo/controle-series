@@ -27,7 +27,7 @@ public class TelaPrincipal {
     private final TelaAutenticacao telaAutenticacao;
     // tela de cadastro de usuário
     private final TelaCadastroUsuario telaCadastroUsuario;
-    // tela de gestão das músicas
+    // tela de gestão das séries
     private final TelaMinhasSeries telaMinhasSeries;
 
     // janela da tela principal
@@ -159,7 +159,7 @@ public class TelaPrincipal {
         menuEntrar = new JMenuItem(I18N.obterMenuEntrar(), GerenciadorDeImagens.ENTRAR);
         menuCadastrarUsuario = new JMenuItem(I18N.obterMenuCadastrarUsuario(), GerenciadorDeImagens.CADASTRAR_USUARIO);
         menuLogout = new JMenuItem(I18N.obterMenuLogout(), GerenciadorDeImagens.LOGOUT);
-        menuMinhasSeries = new JMenuItem(I18N.obterMenuMinhasMusicas(), GerenciadorDeImagens.MINHAS_SERIES);
+        menuMinhasSeries = new JMenuItem(I18N.obterMenuMinhasSeries(), GerenciadorDeImagens.MINHAS_SERIES);
 
         if (!sessaoUsuario.estahLogado()) {
             menuInicio.add(menuEntrar);
