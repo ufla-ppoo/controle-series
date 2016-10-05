@@ -24,7 +24,7 @@ public class GerenciadorDeImagens {
     public static final ImageIcon OK = carregarIcone("btn-ok.png");
     public static final ImageIcon CANCELAR = carregarIcone("btn-cancelar.png");
     public static final ImageIcon SOBRE = carregarIcone("sobre.png");
-    public static final ImageIcon MINHAS_MUSICAS = carregarIcone("musicas.png");
+    public static final ImageIcon MINHAS_SERIES = carregarIcone("series.png");
 
     /**
      * Retorna um ícone (imagem) a partir do seu nome. Utilizado internamente 

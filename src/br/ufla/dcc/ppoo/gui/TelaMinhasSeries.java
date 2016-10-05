@@ -2,7 +2,6 @@ package br.ufla.dcc.ppoo.gui;
 
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
-import br.ufla.dcc.ppoo.servicos.GerenciadorUsuarios;
 import br.ufla.dcc.ppoo.util.Utilidades;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -28,42 +27,38 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author Paulo Jr. e Julio Alves
  */
-public class TelaMinhasMusicas {
+public class TelaMinhasSeries {
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
-    // referência para o gerenciador de usuários
-    private final GerenciadorUsuarios gerenciadorUsuarios;
-
+    
     // componentes da tela
     private JDialog janela;
     private GridBagLayout layout;
     private GridBagConstraints gbc;
-    private JButton btnNovaMusica;
-    private JButton btnEditarMusica;
-    private JButton btnDeletarMusica;
-    private JButton btnSalvarMusica;
+    private JButton btnNovaSerie;
+    private JButton btnEditarSerie;
+    private JButton btnDeletarSerie;
+    private JButton btnSalvarSerie;
     private JButton btnCancelar;
-    private JTable tbMusicas;
+    private JTable tbSeries;
     private JLabel lbTitulo;
-    private JLabel lbArtista;
+    private JLabel lbNumTemporadas;
     private JLabel lbAno;
     private JLabel lbGenero;
-    private JLabel lbLetra;
+    private JLabel lbElenco;
     private JTextField txtTitulo;
-    private JTextField txtArtista;
+    private JTextField txtNumTemporadas;
     private JTextField txtAno;
     private JTextField txtGenero;
-    private JTextArea taLetra;
+    private JTextArea taElenco;
 
     /**
-     * Constrói a tela de autenticação guardando a referência da tela principal
-     * e criando o gerenciador de usuários.
+     * Constrói a tela de autenticação guardando a referência da tela principal.
      *
      * @param telaPrincipal Referência da tela principal.
      */
-    public TelaMinhasMusicas(TelaPrincipal telaPrincipal) {
-        this.gerenciadorUsuarios = new GerenciadorUsuarios();
+    public TelaMinhasSeries(TelaPrincipal telaPrincipal) {
         this.telaPrincipal = telaPrincipal;
     }
 
@@ -82,19 +77,19 @@ public class TelaMinhasMusicas {
      */
     private void construirTabela() {
         Object[] titulosColunas = {
-            I18N.obterColunaTituloMusica(),
-            I18N.obterColunaArtistaMusica()
+            I18N.obterRotuloSerieTitulo(),
+            I18N.obterRotuloSerieGenero()
         };
 
         // Dados "fake"
         Object[][] dados = {
-            {"Like a Stone", "Audioslave"},
-            {"Alive", "Pearl Jam"}
+            {"The Big Bang Theory", "Sitcom"},
+            {"Game of Thrones", "Aventura, Drama, Épico, Fantasia"}
         };
 
-        tbMusicas = new JTable(dados, titulosColunas);
-        tbMusicas.setPreferredScrollableViewportSize(new Dimension(500, 70));
-        tbMusicas.setFillsViewportHeight(true);
+        tbSeries = new JTable(dados, titulosColunas);
+        tbSeries.setPreferredScrollableViewportSize(new Dimension(500, 70));
+        tbSeries.setFillsViewportHeight(true);
     }
 
     /**
@@ -118,25 +113,25 @@ public class TelaMinhasMusicas {
      * Trata o estado inicial da tela
      */
     private void prepararComponentesEstadoInicial() {
-        tbMusicas.clearSelection();
-        tbMusicas.setEnabled(true);
+        tbSeries.clearSelection();
+        tbSeries.setEnabled(true);
 
         txtTitulo.setText("");
-        txtArtista.setText("");
+        txtNumTemporadas.setText("");
         txtAno.setText("");
         txtGenero.setText("");
-        taLetra.setText("");
+        taElenco.setText("");
 
         txtTitulo.setEditable(false);
-        txtArtista.setEditable(false);
+        txtNumTemporadas.setEditable(false);
         txtAno.setEditable(false);
         txtGenero.setEditable(false);
-        taLetra.setEditable(false);
+        taElenco.setEditable(false);
 
-        btnNovaMusica.setEnabled(true);
-        btnEditarMusica.setEnabled(false);
-        btnSalvarMusica.setEnabled(false);
-        btnDeletarMusica.setEnabled(false);
+        btnNovaSerie.setEnabled(true);
+        btnEditarSerie.setEnabled(false);
+        btnSalvarSerie.setEnabled(false);
+        btnDeletarSerie.setEnabled(false);
         btnCancelar.setEnabled(true);
     }
 
@@ -145,15 +140,15 @@ public class TelaMinhasMusicas {
      */
     private void prepararComponentesEstadoSelecaoMusica() {
         txtTitulo.setEditable(false);
-        txtArtista.setEditable(false);
+        txtNumTemporadas.setEditable(false);
         txtAno.setEditable(false);
         txtGenero.setEditable(false);
-        taLetra.setEditable(false);
+        taElenco.setEditable(false);
 
-        btnNovaMusica.setEnabled(true);
-        btnEditarMusica.setEnabled(true);
-        btnSalvarMusica.setEnabled(false);
-        btnDeletarMusica.setEnabled(true);
+        btnNovaSerie.setEnabled(true);
+        btnEditarSerie.setEnabled(true);
+        btnSalvarSerie.setEnabled(false);
+        btnDeletarSerie.setEnabled(true);
         btnCancelar.setEnabled(true);
     }
 
@@ -161,25 +156,25 @@ public class TelaMinhasMusicas {
      * Trata o estado da tela para cadastro de nova música
      */
     private void prepararComponentesEstadoNovaMusica() {
-        tbMusicas.clearSelection();
-        tbMusicas.setEnabled(false);
+        tbSeries.clearSelection();
+        tbSeries.setEnabled(false);
 
         txtTitulo.setText("");
-        txtArtista.setText("");
+        txtNumTemporadas.setText("");
         txtAno.setText("");
         txtGenero.setText("");
-        taLetra.setText("");
+        taElenco.setText("");
 
         txtTitulo.setEditable(true);
-        txtArtista.setEditable(true);
+        txtNumTemporadas.setEditable(true);
         txtAno.setEditable(true);
         txtGenero.setEditable(true);
-        taLetra.setEditable(true);
+        taElenco.setEditable(true);
 
-        btnNovaMusica.setEnabled(false);
-        btnEditarMusica.setEnabled(false);
-        btnSalvarMusica.setEnabled(true);
-        btnDeletarMusica.setEnabled(false);
+        btnNovaSerie.setEnabled(false);
+        btnEditarSerie.setEnabled(false);
+        btnSalvarSerie.setEnabled(true);
+        btnDeletarSerie.setEnabled(false);
         btnCancelar.setEnabled(true);
     }
 
@@ -187,18 +182,18 @@ public class TelaMinhasMusicas {
      * Trata o estado da tela para cadastro música editada
      */
     private void prepararComponentesEstadoEditouMusica() {
-        tbMusicas.setEnabled(false);
+        tbSeries.setEnabled(false);
 
         txtTitulo.setEditable(true);
-        txtArtista.setEditable(true);
+        txtNumTemporadas.setEditable(true);
         txtAno.setEditable(true);
         txtGenero.setEditable(true);
-        taLetra.setEditable(true);
+        taElenco.setEditable(true);
 
-        btnNovaMusica.setEnabled(false);
-        btnEditarMusica.setEnabled(false);
-        btnSalvarMusica.setEnabled(true);
-        btnDeletarMusica.setEnabled(false);
+        btnNovaSerie.setEnabled(false);
+        btnEditarSerie.setEnabled(false);
+        btnSalvarSerie.setEnabled(true);
+        btnDeletarSerie.setEnabled(false);
         btnCancelar.setEnabled(true);
     }
 
@@ -207,7 +202,7 @@ public class TelaMinhasMusicas {
      */
     private void adicionarComponentes() {
         construirTabela();
-        JScrollPane scrollPaneTabela = new JScrollPane(tbMusicas);
+        JScrollPane scrollPaneTabela = new JScrollPane(tbSeries);
         adicionarComponente(scrollPaneTabela,
                 GridBagConstraints.CENTER,
                 GridBagConstraints.NONE,
@@ -225,14 +220,14 @@ public class TelaMinhasMusicas {
                 GridBagConstraints.HORIZONTAL,
                 1, 1, 3, 1);
 
-        lbArtista = new JLabel(I18N.obterRotuloMusicaArtista());
-        adicionarComponente(lbArtista,
+        lbNumTemporadas = new JLabel(I18N.obterRotuloMusicaArtista());
+        adicionarComponente(lbNumTemporadas,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
                 2, 0, 1, 1);
 
-        txtArtista = new JTextField(25);
-        adicionarComponente(txtArtista,
+        txtNumTemporadas = new JTextField(25);
+        adicionarComponente(txtNumTemporadas,
                 GridBagConstraints.LINE_START,
                 GridBagConstraints.HORIZONTAL,
                 2, 1, 3, 1);
@@ -261,30 +256,30 @@ public class TelaMinhasMusicas {
                 GridBagConstraints.HORIZONTAL,
                 3, 3, 1, 1);
 
-        lbLetra = new JLabel(I18N.obterRotuloMusicaLetra());
-        adicionarComponente(lbLetra,
+        lbElenco = new JLabel(I18N.obterRotuloMusicaLetra());
+        adicionarComponente(lbElenco,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
                 4, 0, 1, 1);
 
-        taLetra = new JTextArea(7, 25);
-        JScrollPane scrollPaneDescricao = new JScrollPane(taLetra,
+        taElenco = new JTextArea(7, 25);
+        JScrollPane scrollPaneDescricao = new JScrollPane(taElenco,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         adicionarComponente(scrollPaneDescricao,
                 GridBagConstraints.LINE_START,
                 GridBagConstraints.HORIZONTAL,
                 4, 1, 3, 1);
 
-        btnNovaMusica = new JButton(I18N.obterBotaoNovo(),
+        btnNovaSerie = new JButton(I18N.obterBotaoNovo(),
                 GerenciadorDeImagens.NOVO);
 
-        btnEditarMusica = new JButton(I18N.obterBotaoEditar(),
+        btnEditarSerie = new JButton(I18N.obterBotaoEditar(),
                 GerenciadorDeImagens.EDITAR);
 
-        btnSalvarMusica = new JButton(I18N.obterBotaoSalvar(),
+        btnSalvarSerie = new JButton(I18N.obterBotaoSalvar(),
                 GerenciadorDeImagens.OK);
 
-        btnDeletarMusica = new JButton(I18N.obterBotaoDeletar(),
+        btnDeletarSerie = new JButton(I18N.obterBotaoDeletar(),
                 GerenciadorDeImagens.DELETAR);
 
         btnCancelar = new JButton(I18N.obterBotaoCancelar(),
@@ -293,10 +288,10 @@ public class TelaMinhasMusicas {
         prepararComponentesEstadoInicial();
 
         JPanel painelBotoes = new JPanel();
-        painelBotoes.add(btnNovaMusica);
-        painelBotoes.add(btnEditarMusica);
-        painelBotoes.add(btnSalvarMusica);
-        painelBotoes.add(btnDeletarMusica);
+        painelBotoes.add(btnNovaSerie);
+        painelBotoes.add(btnEditarSerie);
+        painelBotoes.add(btnSalvarSerie);
+        painelBotoes.add(btnDeletarSerie);
         painelBotoes.add(btnCancelar);
 
         adicionarComponente(painelBotoes,
@@ -310,12 +305,12 @@ public class TelaMinhasMusicas {
      */
     private void selecionouMusica() {
         // Dados "fake"
-        String texto = String.format("Linha selecionada: %d", tbMusicas.getSelectedRow());
+        String texto = String.format("Linha selecionada: %d", tbSeries.getSelectedRow());
         txtTitulo.setText(texto);
-        txtArtista.setText(texto);
+        txtNumTemporadas.setText(texto);
         txtAno.setText(texto);
         txtGenero.setText(texto);
-        taLetra.setText(texto);
+        taElenco.setText(texto);
     }
 
     /**
@@ -329,7 +324,7 @@ public class TelaMinhasMusicas {
             }
         });
 
-        tbMusicas.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        tbSeries.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 prepararComponentesEstadoSelecaoMusica();
@@ -337,28 +332,28 @@ public class TelaMinhasMusicas {
             }
         });
 
-        btnEditarMusica.addActionListener(new ActionListener() {
+        btnEditarSerie.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 prepararComponentesEstadoEditouMusica();
             }
         });
 
-        btnSalvarMusica.addActionListener(new ActionListener() {
+        btnSalvarSerie.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 prepararComponentesEstadoInicial();
             }
         });
 
-        btnNovaMusica.addActionListener(new ActionListener() {
+        btnNovaSerie.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 prepararComponentesEstadoNovaMusica();
             }
         });
 
-        btnDeletarMusica.addActionListener(new ActionListener() {
+        btnDeletarSerie.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Utilidades.msgConfirmacao(I18N.obterConfirmacaoDeletar())) {

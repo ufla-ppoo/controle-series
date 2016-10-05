@@ -28,7 +28,7 @@ public class TelaPrincipal {
     // tela de cadastro de usuário
     private final TelaCadastroUsuario telaCadastroUsuario;
     // tela de gestão das músicas
-    private final TelaMinhasMusicas telaMinhasMusicas;
+    private final TelaMinhasSeries telaMinhasSeries;
 
     // janela da tela principal
     private JFrame janela;
@@ -49,7 +49,7 @@ public class TelaPrincipal {
 
     // Itens de menu específicos para usuários logados no sistema    
     private JMenuItem menuLogout;
-    private JMenuItem menuMinhasMusicas;
+    private JMenuItem menuMinhasSeries;
 
     /**
      * Construtor; incializa as demais telas e sessão de usuário.
@@ -57,7 +57,7 @@ public class TelaPrincipal {
     public TelaPrincipal() {
         telaAutenticacao = new TelaAutenticacao(this);
         telaCadastroUsuario = new TelaCadastroUsuario(this);
-        telaMinhasMusicas = new TelaMinhasMusicas(this);
+        telaMinhasSeries = new TelaMinhasSeries(this);
         sessaoUsuario = SessaoUsuario.obterInstancia();
     }
 
@@ -119,10 +119,10 @@ public class TelaPrincipal {
             }
         });
 
-        menuMinhasMusicas.addActionListener(new ActionListener() {
+        menuMinhasSeries.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                telaMinhasMusicas.inicializar();
+                telaMinhasSeries.inicializar();
             }
         });
 
@@ -159,7 +159,7 @@ public class TelaPrincipal {
         menuEntrar = new JMenuItem(I18N.obterMenuEntrar(), GerenciadorDeImagens.ENTRAR);
         menuCadastrarUsuario = new JMenuItem(I18N.obterMenuCadastrarUsuario(), GerenciadorDeImagens.CADASTRAR_USUARIO);
         menuLogout = new JMenuItem(I18N.obterMenuLogout(), GerenciadorDeImagens.LOGOUT);
-        menuMinhasMusicas = new JMenuItem(I18N.obterMenuMinhasMusicas(), GerenciadorDeImagens.MINHAS_MUSICAS);
+        menuMinhasSeries = new JMenuItem(I18N.obterMenuMinhasMusicas(), GerenciadorDeImagens.MINHAS_SERIES);
 
         if (!sessaoUsuario.estahLogado()) {
             menuInicio.add(menuEntrar);
@@ -167,7 +167,7 @@ public class TelaPrincipal {
         } else {
             // Aqui você poderá adicionar outros itens de menu, se necessário.
 
-            menuInicio.add(menuMinhasMusicas);
+            menuInicio.add(menuMinhasSeries);
             menuInicio.add(menuLogout);
         }
 
