@@ -32,7 +32,7 @@ public class UsuarioDAOLista implements UsuarioDAO {
         listaUsuario.add(new Usuario("flavia", senha, "Flávia"));
         listaUsuario.add(new Usuario("matheus", senha, "Matheus"));
         listaUsuario.add(new Usuario("alexandre", senha, "Alexandre"));
-        listaUsuario.add(new Usuario("admin", senha, "Adm"));
+        listaUsuario.add(new Usuario("123", senha, "admin"));
 
     }
 

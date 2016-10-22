@@ -2,6 +2,8 @@ package br.ufla.dcc.ppoo.gui;
 
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
+import br.ufla.dcc.ppoo.modelo.Serie;
+import br.ufla.dcc.ppoo.servicos.GerenciadorSeries;
 import br.ufla.dcc.ppoo.util.Utilidades;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -52,6 +54,8 @@ public class TelaMinhasSeries {
     private JTextField txtAno;
     private JTextField txtGenero;
     private JTextArea taElenco;
+    private final GerenciadorSeries gerenciadorSeries;
+
 
     /**
      * Constrói a tela de autenticação guardando a referência da tela principal.
@@ -60,6 +64,7 @@ public class TelaMinhasSeries {
      */
     public TelaMinhasSeries(TelaPrincipal telaPrincipal) {
         this.telaPrincipal = telaPrincipal;
+        this.gerenciadorSeries = new GerenciadorSeries();
     }
 
     /**
@@ -70,6 +75,7 @@ public class TelaMinhasSeries {
         construirTela();
         configurarEventosTela();
         exibirTela();
+        
     }
 
     /**
@@ -81,11 +87,23 @@ public class TelaMinhasSeries {
             I18N.obterRotuloSerieGenero()
         };
 
-        // Dados "fake"
+        
+        
+        
+              
+        Object[][] dados = new Object [gerenciadorSeries.getListaSerie().size()][2];
+        
+        for (int i=0; i< gerenciadorSeries.getListaSerie().size(); i++ ){
+         dados [i][0] = gerenciadorSeries.getListaSerie().get(i).getTitulo();
+         dados[i][1] = gerenciadorSeries.getListaSerie().get(i).getGenero();
+        }
+        
+        
+        /* Dados "fake"
         Object[][] dados = {
             {"The Big Bang Theory", "Sitcom"},
             {"Game of Thrones", "Aventura, Drama, Épico, Fantasia"}
-        };
+        }; */
 
         tbSeries = new JTable(dados, titulosColunas);
         tbSeries.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -157,7 +175,7 @@ public class TelaMinhasSeries {
      */
     private void prepararComponentesEstadoNovaSerie() {
         tbSeries.clearSelection();
-        tbSeries.setEnabled(false);
+        tbSeries.setEnabled(true);
 
         txtTitulo.setText("");
         txtNumTemporadas.setText("");
@@ -304,13 +322,24 @@ public class TelaMinhasSeries {
      * Trata a selação de séries na grade.
      */
     private void selecionouSerie() {
+        
+
         // Dados "fake"
+        /*
         String texto = String.format("Linha selecionada: %d", tbSeries.getSelectedRow());
         txtTitulo.setText(texto);
         txtNumTemporadas.setText(texto);
         txtAno.setText(texto);
         txtGenero.setText(texto);
         taElenco.setText(texto);
+        */
+    }
+    
+        private Serie carregarSerie() {
+        return new Serie(txtTitulo.getText(),
+                txtGenero.getText(),
+                txtAno.getText(),
+                txtNumTemporadas.getText());
     }
 
     /**
@@ -343,6 +372,8 @@ public class TelaMinhasSeries {
             @Override
             public void actionPerformed(ActionEvent e) {
                 prepararComponentesEstadoInicial();
+                gerenciadorSeries.cadastrarSerie(carregarSerie());
+                System.out.println(gerenciadorSeries.getListaSerie().get(0).getTitulo());
             }
         });
 
