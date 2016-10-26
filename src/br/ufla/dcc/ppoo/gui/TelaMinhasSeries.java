@@ -35,6 +35,7 @@ public class TelaMinhasSeries {
     private final TelaPrincipal telaPrincipal;
 
     // componentes da tela
+    private int opsalve=0;
     private JDialog janela;
     private GridBagLayout layout;
     private GridBagConstraints gbc;
@@ -98,13 +99,6 @@ public class TelaMinhasSeries {
          dados[i][1] = gerenciadorSeries.getListaSerie().get(i).getGenero();
         }
         
-        
-        /* Dados "fake"
-        Object[][] dados = {
-            {"The Big Bang Theory", "Sitcom"},
-            {"Game of Thrones", "Aventura, Drama, Épico, Fantasia"}
-        }; */
-
         tbSeries = new JTable(dados, titulosColunas);
         tbSeries.setPreferredScrollableViewportSize(new Dimension(500, 70));
         tbSeries.setFillsViewportHeight(true);
@@ -176,7 +170,7 @@ public class TelaMinhasSeries {
     private void prepararComponentesEstadoNovaSerie() {
         tbSeries.clearSelection();
         tbSeries.setEnabled(true);
-
+        this.opsalve=1;
         txtTitulo.setText("");
         txtNumTemporadas.setText("");
         txtAno.setText("");
@@ -201,7 +195,7 @@ public class TelaMinhasSeries {
      */
     private void prepararComponentesEstadoEditouSerie() {
         tbSeries.setEnabled(false);
-
+        this.opsalve=2;
         txtTitulo.setEditable(true);
         txtNumTemporadas.setEditable(true);
         txtAno.setEditable(true);
@@ -322,24 +316,22 @@ public class TelaMinhasSeries {
      * Trata a selação de séries na grade.
      */
     private void selecionouSerie() {
+               
+        txtTitulo.setText(gerenciadorSeries.getListaSerie().get(tbSeries.getSelectedRow()).getTitulo());
+        txtNumTemporadas.setText(gerenciadorSeries.getListaSerie().get(tbSeries.getSelectedRow()).getNumeroDeTemporadas());
+        txtAno.setText(gerenciadorSeries.getListaSerie().get(tbSeries.getSelectedRow()).getAnoLancamento());
+        txtGenero.setText(gerenciadorSeries.getListaSerie().get(tbSeries.getSelectedRow()).getGenero());
+        taElenco.setText(gerenciadorSeries.getListaSerie().get(tbSeries.getSelectedRow()).getElenco());
         
-
-        // Dados "fake"
-        /*
-        String texto = String.format("Linha selecionada: %d", tbSeries.getSelectedRow());
-        txtTitulo.setText(texto);
-        txtNumTemporadas.setText(texto);
-        txtAno.setText(texto);
-        txtGenero.setText(texto);
-        taElenco.setText(texto);
-        */
     }
     
         private Serie carregarSerie() {
         return new Serie(txtTitulo.getText(),
                 txtGenero.getText(),
                 txtAno.getText(),
-                txtNumTemporadas.getText());
+                txtNumTemporadas.getText(),
+                taElenco.getText()
+                );
     }
 
     /**
@@ -364,6 +356,7 @@ public class TelaMinhasSeries {
         btnEditarSerie.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                
                 prepararComponentesEstadoEditouSerie();
             }
         });
@@ -371,16 +364,23 @@ public class TelaMinhasSeries {
         btnSalvarSerie.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                prepararComponentesEstadoInicial();
-                gerenciadorSeries.cadastrarSerie(carregarSerie());
-                System.out.println(gerenciadorSeries.getListaSerie().get(0).getTitulo());
+                if(opsalve==1){
+                    gerenciadorSeries.cadastrarSerie(carregarSerie());
+                    
+                }
+                if(opsalve==2){
+                    gerenciadorSeries.editarSerie(carregarSerie(),tbSeries.getSelectedRow());
+                    
+                }
+                janela.dispose();
+                inicializar();
             }
         });
 
         btnNovaSerie.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                prepararComponentesEstadoNovaSerie();
+               prepararComponentesEstadoNovaSerie();
             }
         });
 
@@ -388,7 +388,9 @@ public class TelaMinhasSeries {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Utilidades.msgConfirmacao(I18N.obterConfirmacaoDeletar())) {
-                    // Remover série!
+                    gerenciadorSeries.deletarSerie(carregarSerie(),tbSeries.getSelectedRow());
+                janela.dispose();
+                inicializar();
                 }
             }
         });

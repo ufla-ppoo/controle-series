@@ -2,23 +2,32 @@ package br.ufla.dcc.ppoo.modelo;
 
 import java.util.ArrayList;
 
+/**
+ * Representa uma série do sistema.
+ * 
+ * @author Breno e Lucas
+ */
+
 public class Serie {
     
     private String titulo;
     private String genero;
-    private String autor;
     private String anoLancamento;
     private String numeroDeTemporadas;
-    private ArrayList<String> elenco;
+    private String elenco;
 
-    public Serie(String titulo, String genero, String anoLancamento, String numeroDeTemporadas) {
+    public Serie(String titulo, String genero, String anoLancamento, String numeroDeTemporadas,String elenco) {
         this.titulo = titulo;
         this.genero = genero;
         this.anoLancamento = anoLancamento;
         this.numeroDeTemporadas = numeroDeTemporadas;
+        this.elenco=elenco;
     }
 
-
+    
+    
+    // Métodos Getters e Setters
+    
     public String getTitulo() {
         return titulo;
     }
@@ -35,12 +44,12 @@ public class Serie {
         this.genero = genero;
     }
 
-    public String getAutor() {
-        return autor;
+    public void setAnoLancamento(String anoLancamento) {
+        this.anoLancamento = anoLancamento;
     }
 
-    public void setAutor(String autor) {
-        this.autor = autor;
+    public String getAnoLancamento() {
+        return anoLancamento;
     }
 
     public String getNumeroDeTemporadas() {
@@ -51,11 +60,11 @@ public class Serie {
         this.numeroDeTemporadas = numeroDeTemporadas;
     }
 
-    public ArrayList<String> getElenco() {
+    public String getElenco() {
         return elenco;
     }
 
-    public void setElenco(ArrayList<String> elenco) {
+    public void setElenco(String elenco) {
         this.elenco = elenco;
     }
 
