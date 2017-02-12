@@ -1,11 +1,12 @@
 package br.ufla.dcc.ppoo.dao;
 
 import br.ufla.dcc.ppoo.modelo.Usuario;
+import java.util.List;
 
 /**
  * Interface do Data Access Object (Padrão de Projeto) do Usuário
  * 
- * @author Paulo Jr. e Julio Alves
+ * @author Breno
  */
 public interface UsuarioDAO {
     /**
@@ -23,4 +24,7 @@ public interface UsuarioDAO {
      */
     public void adicionarUsuario(Usuario usuario);
     
+    public void SalvarUsuariosArquivo();
+    
+    public void RecuperarUsuariosArquivo();
 }

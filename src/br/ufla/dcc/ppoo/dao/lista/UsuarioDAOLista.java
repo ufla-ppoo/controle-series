@@ -1,7 +1,14 @@
 package br.ufla.dcc.ppoo.dao.lista;
 
 import br.ufla.dcc.ppoo.dao.UsuarioDAO;
+import br.ufla.dcc.ppoo.modelo.Serie;
 import br.ufla.dcc.ppoo.modelo.Usuario;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,30 +16,21 @@ import java.util.List;
  * Implementação do Data Access Object (Padrão de Projeto) do Usuário através de
  * Lista em memória
  * 
- * @author Paulo Jr. e Julio Alves
+ * @author Breno
  */
-public class UsuarioDAOLista implements UsuarioDAO {
+public class UsuarioDAOLista implements UsuarioDAO, Serializable{
 
     // instância única da classe (Padrão de Projeto Singleton)
     private static UsuarioDAOLista instancia;
     
     // lista em em memória dos usuários cadastrados
-    private final List<Usuario> listaUsuario;
+    private List<Usuario> listaUsuario;
 
     /**
      * Constrói o objeto já definindo 5 usuários padrões
      */
     private UsuarioDAOLista() {
         listaUsuario = new ArrayList<Usuario>();
-
-        // Cadastrei alguns usuários para testar o programa.
-        char[] senha = new char[]{'1', '2', '3'};
-        listaUsuario.add(new Usuario("paulo", senha, "Paulo"));
-        listaUsuario.add(new Usuario("jose", senha, "José"));
-        listaUsuario.add(new Usuario("flavia", senha, "Flávia"));
-        listaUsuario.add(new Usuario("matheus", senha, "Matheus"));
-        listaUsuario.add(new Usuario("alexandre", senha, "Alexandre"));
-        listaUsuario.add(new Usuario("123", senha, "admin"));
 
     }
 
@@ -73,4 +71,31 @@ public class UsuarioDAOLista implements UsuarioDAO {
     public void adicionarUsuario(Usuario usuario) {
         listaUsuario.add(usuario);
     }
+    
+    @Override
+    public void SalvarUsuariosArquivo(){
+        try {
+        ObjectOutputStream oos = new ObjectOutputStream(new
+        FileOutputStream("usuarios.bin"));
+        oos.writeObject(listaUsuario);
+        oos.close();
+
+        } catch (Exception e) {}
+
+    }
+    
+    @Override
+    public void RecuperarUsuariosArquivo(){
+        try {
+            
+            File f = new File("usuarios.bin");
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
+            listaUsuario = (List<Usuario>) ois.readObject();
+            ois.close();
+
+        } 
+        catch (Exception e) {}
+        
+    }
+    
 }

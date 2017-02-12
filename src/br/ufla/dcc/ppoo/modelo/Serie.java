@@ -1,27 +1,30 @@
 package br.ufla.dcc.ppoo.modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Representa uma série do sistema.
  * 
- * @author Breno e Lucas
+ * @author Breno
  */
 
-public class Serie {
+public class Serie implements Serializable {
     
     private String titulo;
     private String genero;
     private String anoLancamento;
     private String numeroDeTemporadas;
     private String elenco;
+    private Usuario usuario;
 
-    public Serie(String titulo, String genero, String anoLancamento, String numeroDeTemporadas,String elenco) {
+    public Serie(String titulo, String genero, String anoLancamento, String numeroDeTemporadas,String elenco, Usuario usuario) {
         this.titulo = titulo;
         this.genero = genero;
         this.anoLancamento = anoLancamento;
         this.numeroDeTemporadas = numeroDeTemporadas;
         this.elenco=elenco;
+        this.usuario = usuario;
     }
 
     
@@ -67,6 +70,8 @@ public class Serie {
     public void setElenco(String elenco) {
         this.elenco = elenco;
     }
-
     
+    public Usuario getUsuario(){
+        return usuario;
+    }
 }

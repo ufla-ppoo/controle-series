@@ -4,30 +4,36 @@ import br.ufla.dcc.ppoo.dao.SerieDAO;
 import br.ufla.dcc.ppoo.dao.lista.SerieDAOLista;
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.modelo.Serie;
+import br.ufla.dcc.ppoo.modelo.Usuario;
+import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Classe que representa a camada de negócios de cadastro de Séries. Permite
  * cadastrar, editar e remover séries.
  * 
- * @author Breno e Lucas
+ * @author Breno
  */
 
-public class GerenciadorSeries {
-
+public class GerenciadorSeries implements Serializable {
+    
+    // Utiliza a interface por conta do polimorfismo
     private final SerieDAO repositorioSerie;
+    private final SessaoUsuario sessaoUsuario;
     
     /**
      * Constroi o gerenciador de séries, inicializando as camadas de acesso a 
      * dados.
      */
     public GerenciadorSeries() {
-        repositorioSerie
-                = SerieDAOLista.obterInstancia();
-            }
+        repositorioSerie = SerieDAOLista.obterInstancia();
+        sessaoUsuario = SessaoUsuario.obterInstancia();
+    
+    }
 
-    public List<Serie> getListaSerie(){
-    return repositorioSerie.getListaSeries();
+    public List<Serie> getListaSerie(Usuario usuario){
+        return repositorioSerie.getListaSeries(usuario);
     }
 
      /**
@@ -38,7 +44,8 @@ public class GerenciadorSeries {
     
     public void cadastrarSerie(Serie serie){
 
-        repositorioSerie.adicionarSerie(serie);
+        repositorioSerie.adicionarSerie(serie); 
+        // Chamar metodo para adicionar a serie no arquivo.
     }
     
      /**
@@ -46,8 +53,8 @@ public class GerenciadorSeries {
      * 
      */  
     
-    public void editarSerie(Serie serie,int a) {
-        repositorioSerie.editarSerie(serie,a);
+    public void editarSerie(Serie serie, String tituloSerie) {
+        repositorioSerie.editarSerie(serie, tituloSerie, sessaoUsuario.obterUsuario());
     }
     
      /**
@@ -55,7 +62,15 @@ public class GerenciadorSeries {
      * 
      */  
     
-    public void deletarSerie (Serie serie, int a){
-        repositorioSerie.deletarSerie(serie, a);
+    public void deletarSerie (String nome){
+        repositorioSerie.deletarSerie(nome, sessaoUsuario.obterUsuario()); // Envia o usuario logado
+    }
+    
+    public void SalvarSeriesArquivo (){
+        repositorioSerie.SalvarSeriesArquivo();
+    }
+    
+    public void RecuperarSeriesArquivo(){
+        repositorioSerie.RecuperarSeriesArquivo();
     }
 }

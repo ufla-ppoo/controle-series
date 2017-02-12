@@ -3,6 +3,7 @@ package br.ufla.dcc.ppoo.gui;
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
 import br.ufla.dcc.ppoo.modelo.Serie;
+import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
 import br.ufla.dcc.ppoo.servicos.GerenciadorSeries;
 import br.ufla.dcc.ppoo.util.Utilidades;
 import java.awt.Component;
@@ -12,6 +13,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -23,19 +26,23 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * Classe que representa a tela Minhas Séries
  *
- * @author Paulo Jr. e Julio Alves
+ * @author Breno
  */
 public class TelaMinhasSeries {
+    
+    private final GerenciadorSeries gerenciadorSeries;
+    private final SessaoUsuario sessaoUsuario;
+    private String titulo;
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
 
     // componentes da tela
-    private int opsalve=0;
     private JDialog janela;
     private GridBagLayout layout;
     private GridBagConstraints gbc;
@@ -55,8 +62,8 @@ public class TelaMinhasSeries {
     private JTextField txtAno;
     private JTextField txtGenero;
     private JTextArea taElenco;
-    private final GerenciadorSeries gerenciadorSeries;
 
+    
 
     /**
      * Constrói a tela de autenticação guardando a referência da tela principal.
@@ -65,7 +72,8 @@ public class TelaMinhasSeries {
      */
     public TelaMinhasSeries(TelaPrincipal telaPrincipal) {
         this.telaPrincipal = telaPrincipal;
-        this.gerenciadorSeries = new GerenciadorSeries();
+        sessaoUsuario = SessaoUsuario.obterInstancia();
+        gerenciadorSeries = new GerenciadorSeries();
     }
 
     /**
@@ -83,23 +91,23 @@ public class TelaMinhasSeries {
      * Constrói a janela tratando internacionalização, componentes e layout.
      */
     private void construirTabela() {
+        
         Object[] titulosColunas = {
             I18N.obterRotuloSerieTitulo(),
             I18N.obterRotuloSerieGenero()
         };
 
+        List<String[]> lista = new ArrayList<>();
         
+         // Add o titulo e o genero na lista criada utilizando expressão lambda do java 8
+        gerenciadorSeries.getListaSerie(sessaoUsuario.obterUsuario()).stream().forEach((s) -> {
+            lista.add(new String[]{s.getTitulo(),s.getGenero()});
+        });
         
+        DefaultTableModel modelo = new DefaultTableModel(lista.toArray(new String[lista.size()][]), titulosColunas);
         
-              
-        Object[][] dados = new Object [gerenciadorSeries.getListaSerie().size()][2];
-        
-        for (int i=0; i< gerenciadorSeries.getListaSerie().size(); i++ ){
-         dados [i][0] = gerenciadorSeries.getListaSerie().get(i).getTitulo();
-         dados[i][1] = gerenciadorSeries.getListaSerie().get(i).getGenero();
-        }
-        
-        tbSeries = new JTable(dados, titulosColunas);
+        tbSeries = new JTable();
+        tbSeries.setModel(modelo);
         tbSeries.setPreferredScrollableViewportSize(new Dimension(500, 70));
         tbSeries.setFillsViewportHeight(true);
     }
@@ -127,23 +135,7 @@ public class TelaMinhasSeries {
     private void prepararComponentesEstadoInicial() {
         tbSeries.clearSelection();
         tbSeries.setEnabled(true);
-
-        txtTitulo.setText("");
-        txtNumTemporadas.setText("");
-        txtAno.setText("");
-        txtGenero.setText("");
-        taElenco.setText("");
-
-        txtTitulo.setEditable(false);
-        txtNumTemporadas.setEditable(false);
-        txtAno.setEditable(false);
-        txtGenero.setEditable(false);
-        taElenco.setEditable(false);
-
-        btnNovaSerie.setEnabled(true);
-        btnEditarSerie.setEnabled(false);
-        btnSalvarSerie.setEnabled(false);
-        btnDeletarSerie.setEnabled(false);
+        
         btnCancelar.setEnabled(true);
     }
 
@@ -151,63 +143,10 @@ public class TelaMinhasSeries {
      * Trata o estado da tela para seleção de séries
      */
     private void prepararComponentesEstadoSelecaoSerie() {
-        txtTitulo.setEditable(false);
-        txtNumTemporadas.setEditable(false);
-        txtAno.setEditable(false);
-        txtGenero.setEditable(false);
-        taElenco.setEditable(false);
 
-        btnNovaSerie.setEnabled(true);
-        btnEditarSerie.setEnabled(true);
-        btnSalvarSerie.setEnabled(false);
-        btnDeletarSerie.setEnabled(true);
         btnCancelar.setEnabled(true);
     }
 
-    /**
-     * Trata o estado da tela para cadastro de nova série
-     */
-    private void prepararComponentesEstadoNovaSerie() {
-        tbSeries.clearSelection();
-        tbSeries.setEnabled(true);
-        this.opsalve=1;
-        txtTitulo.setText("");
-        txtNumTemporadas.setText("");
-        txtAno.setText("");
-        txtGenero.setText("");
-        taElenco.setText("");
-
-        txtTitulo.setEditable(true);
-        txtNumTemporadas.setEditable(true);
-        txtAno.setEditable(true);
-        txtGenero.setEditable(true);
-        taElenco.setEditable(true);
-
-        btnNovaSerie.setEnabled(false);
-        btnEditarSerie.setEnabled(false);
-        btnSalvarSerie.setEnabled(true);
-        btnDeletarSerie.setEnabled(false);
-        btnCancelar.setEnabled(true);
-    }
-
-    /**
-     * Trata o estado da tela para cadastro série editada
-     */
-    private void prepararComponentesEstadoEditouSerie() {
-        tbSeries.setEnabled(false);
-        this.opsalve=2;
-        txtTitulo.setEditable(true);
-        txtNumTemporadas.setEditable(true);
-        txtAno.setEditable(true);
-        txtGenero.setEditable(true);
-        taElenco.setEditable(true);
-
-        btnNovaSerie.setEnabled(false);
-        btnEditarSerie.setEnabled(false);
-        btnSalvarSerie.setEnabled(true);
-        btnDeletarSerie.setEnabled(false);
-        btnCancelar.setEnabled(true);
-    }
 
     /**
      * Adiciona os componentes da tela tratando layout e internacionalização
@@ -220,79 +159,6 @@ public class TelaMinhasSeries {
                 GridBagConstraints.NONE,
                 0, 0, 4, 1);
 
-        lbTitulo = new JLabel(I18N.obterRotuloSerieTitulo());
-        adicionarComponente(lbTitulo,
-                GridBagConstraints.LINE_END,
-                GridBagConstraints.NONE,
-                1, 0, 1, 1);
-
-        txtTitulo = new JTextField(25);
-        adicionarComponente(txtTitulo,
-                GridBagConstraints.LINE_START,
-                GridBagConstraints.HORIZONTAL,
-                1, 1, 3, 1);
-
-        lbGenero = new JLabel(I18N.obterRotuloSerieGenero());
-        adicionarComponente(lbGenero,
-                GridBagConstraints.LINE_END,
-                GridBagConstraints.NONE,
-                2, 0, 1, 1);
-
-        txtGenero = new JTextField(25);
-        adicionarComponente(txtGenero,
-                GridBagConstraints.LINE_START,
-                GridBagConstraints.HORIZONTAL,
-                2, 1, 3, 1);
-
-        lbAno = new JLabel(I18N.obterRotuloSerieAno());
-        adicionarComponente(lbAno,
-                GridBagConstraints.LINE_END,
-                GridBagConstraints.NONE,
-                3, 0, 1, 1);
-
-        txtAno = new JTextField(8);
-        adicionarComponente(txtAno,
-                GridBagConstraints.LINE_START,
-                GridBagConstraints.HORIZONTAL,
-                3, 1, 1, 1);
-
-        lbNumTemporadas = new JLabel(I18N.obterRotuloSerieNumTemporadas());
-        adicionarComponente(lbNumTemporadas,
-                GridBagConstraints.LINE_END,
-                GridBagConstraints.NONE,
-                3, 2, 1, 1);
-
-        txtNumTemporadas = new JTextField(8);
-        adicionarComponente(txtNumTemporadas,
-                GridBagConstraints.LINE_START,
-                GridBagConstraints.HORIZONTAL,
-                3, 3, 1, 1);
-
-        lbElenco = new JLabel(I18N.obterRotuloSerieElenco());
-        adicionarComponente(lbElenco,
-                GridBagConstraints.LINE_END,
-                GridBagConstraints.NONE,
-                4, 0, 1, 1);
-
-        taElenco = new JTextArea(7, 25);
-        JScrollPane scrollPaneDescricao = new JScrollPane(taElenco,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        adicionarComponente(scrollPaneDescricao,
-                GridBagConstraints.LINE_START,
-                GridBagConstraints.HORIZONTAL,
-                4, 1, 3, 1);
-
-        btnNovaSerie = new JButton(I18N.obterBotaoNovo(),
-                GerenciadorDeImagens.NOVO);
-
-        btnEditarSerie = new JButton(I18N.obterBotaoEditar(),
-                GerenciadorDeImagens.EDITAR);
-
-        btnSalvarSerie = new JButton(I18N.obterBotaoSalvar(),
-                GerenciadorDeImagens.OK);
-
-        btnDeletarSerie = new JButton(I18N.obterBotaoDeletar(),
-                GerenciadorDeImagens.DELETAR);
 
         btnCancelar = new JButton(I18N.obterBotaoCancelar(),
                 GerenciadorDeImagens.CANCELAR);
@@ -300,10 +166,7 @@ public class TelaMinhasSeries {
         prepararComponentesEstadoInicial();
 
         JPanel painelBotoes = new JPanel();
-        painelBotoes.add(btnNovaSerie);
-        painelBotoes.add(btnEditarSerie);
-        painelBotoes.add(btnSalvarSerie);
-        painelBotoes.add(btnDeletarSerie);
+        
         painelBotoes.add(btnCancelar);
 
         adicionarComponente(painelBotoes,
@@ -316,23 +179,19 @@ public class TelaMinhasSeries {
      * Trata a selação de séries na grade.
      */
     private void selecionouSerie() {
-               
-        txtTitulo.setText(gerenciadorSeries.getListaSerie().get(tbSeries.getSelectedRow()).getTitulo());
-        txtNumTemporadas.setText(gerenciadorSeries.getListaSerie().get(tbSeries.getSelectedRow()).getNumeroDeTemporadas());
-        txtAno.setText(gerenciadorSeries.getListaSerie().get(tbSeries.getSelectedRow()).getAnoLancamento());
-        txtGenero.setText(gerenciadorSeries.getListaSerie().get(tbSeries.getSelectedRow()).getGenero());
-        taElenco.setText(gerenciadorSeries.getListaSerie().get(tbSeries.getSelectedRow()).getElenco());
+          
+        List<Serie> lista = new ArrayList<>();       
+        lista = gerenciadorSeries.getListaSerie(sessaoUsuario.obterUsuario());
+        
+        Serie serie = lista.get(tbSeries.getSelectedRow());
+        txtTitulo.setText(serie.getTitulo());
+        txtNumTemporadas.setText(serie.getNumeroDeTemporadas());
+        txtAno.setText(serie.getAnoLancamento());
+        txtGenero.setText(serie.getGenero());
+        taElenco.setText(serie.getElenco());
         
     }
     
-        private Serie carregarSerie() {
-        return new Serie(txtTitulo.getText(),
-                txtGenero.getText(),
-                txtAno.getText(),
-                txtNumTemporadas.getText(),
-                taElenco.getText()
-                );
-    }
 
     /**
      * Configura os eventos da tela.
@@ -350,48 +209,6 @@ public class TelaMinhasSeries {
             public void valueChanged(ListSelectionEvent e) {
                 prepararComponentesEstadoSelecaoSerie();
                 selecionouSerie();
-            }
-        });
-
-        btnEditarSerie.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-                prepararComponentesEstadoEditouSerie();
-            }
-        });
-
-        btnSalvarSerie.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(opsalve==1){
-                    gerenciadorSeries.cadastrarSerie(carregarSerie());
-                    
-                }
-                if(opsalve==2){
-                    gerenciadorSeries.editarSerie(carregarSerie(),tbSeries.getSelectedRow());
-                    
-                }
-                janela.dispose();
-                inicializar();
-            }
-        });
-
-        btnNovaSerie.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-               prepararComponentesEstadoNovaSerie();
-            }
-        });
-
-        btnDeletarSerie.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (Utilidades.msgConfirmacao(I18N.obterConfirmacaoDeletar())) {
-                    gerenciadorSeries.deletarSerie(carregarSerie(),tbSeries.getSelectedRow());
-                janela.dispose();
-                inicializar();
-                }
             }
         });
     }
@@ -419,4 +236,24 @@ public class TelaMinhasSeries {
         janela.setVisible(true);
         janela.setResizable(false);
     }
+    
+        private Serie pegaSerie() {
+        try {
+            return new Serie(txtTitulo.getText(),
+            txtGenero.getText(),
+            txtAno.getText(),
+            txtNumTemporadas.getText(),
+            taElenco.getText(),        
+            sessaoUsuario.obterUsuario());
+            }catch (Exception ex) {
+                return null;                
+        }  
+    }
+        
+    public void atualiza(){
+        construirTabela();
+        prepararComponentesEstadoInicial();      
+        janela.dispose();
+        inicializar();
+    }    
 }

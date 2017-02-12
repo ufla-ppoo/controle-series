@@ -1,13 +1,14 @@
 package br.ufla.dcc.ppoo.modelo;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  * Representa um usuário do sistema.
  * 
- * @author Paulo Jr. e Julio Alves
+ * @author Breno
  */
-public class Usuario {
+public class Usuario implements Serializable{
     // login do usuário
     private String login;
     // senha do usuário
