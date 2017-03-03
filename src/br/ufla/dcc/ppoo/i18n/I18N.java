@@ -47,6 +47,15 @@ public class I18N {
     public static String obterMenuInicio() {
         return rb.getString("menu.inicio");
     }
+    
+    /**
+     * Retorna o texto do menu Listas.
+     *
+     * @return Texto do menu Listas.
+     */
+    public static String obterMenuListas() {
+        return rb.getString("menu.listas");
+    }
 
     /**
      * Retorna o mnemônico do menu Início.
@@ -84,8 +93,8 @@ public class I18N {
         return rb.getString("menu.inicio.minhas_listas");
     }
     
-    public static String obterMenuListasPublicas(){
-        return rb.getString("menu.inicio.listas_publicas");
+    public static String obterMenuPesquisarListas(){
+        return rb.getString("menu.listas.pesquisar_listas");
     }
 
     /**
@@ -325,6 +334,16 @@ public class I18N {
     public static String obterTituloTelaAutenticacao() {
         return rb.getString("tela.autenticacao.titulo");
     }
+    
+    /**
+     * Retorna o título da tela pequisar por listas.
+     *
+     * @return Título da tela pequisar por listas.
+     */
+    public static String obterTituloTelaBuscarListas() {
+        return rb.getString("tela.buscarlistas.titulo");
+    }
+        
         
     public static String obterTituloTelaDetalhes() {
         return rb.getString("tela.detalhes.titulo");
@@ -418,6 +437,16 @@ public class I18N {
     public static String obterBotaoSalvar() {
         return rb.getString("botao.salvar");
     }
+    
+    /**
+     * Retorna o texto do botão Buscar.
+     *
+     * @return Texto do botão Buscar.
+     */
+    public static String obterBotaoBuscar() {
+        return rb.getString("botao.buscar");
+    }
+
 
     /**
      * Retorna o texto do botão Novo.
@@ -467,15 +496,17 @@ public class I18N {
     public static String obterRotuloSerieTitulo() {
         return rb.getString("rotulo.serie.titulo");
     }
-        
+    
     /**
-     * Retorna o texto do rótulo título da série.
+     * Retorna o texto do rótulo Pesquisar.
      *
-     * @return Texto do rótulo título da série.
+     * @return Texto do rótulo Pesquisar.
      */
     public static String obterRotuloListaTitulo() {
         return rb.getString("rotulo.lista.titulo");
     }
+        
+
     
     public static String obterRotuloListaPrivado() {
         return rb.getString("rotulo.lista.privado");

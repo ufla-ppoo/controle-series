@@ -6,6 +6,8 @@ import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
 import br.ufla.dcc.ppoo.servicos.GerenciadorUsuarios;
 import br.ufla.dcc.ppoo.util.Utilidades;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -40,7 +42,8 @@ public class TelaPrincipal {
     private final TelaCadastroMinhasSeries telaCadastroMinhasSeries;
     // tela de lista de séries
     private final TelaMinhasListas TelaMinhasListas;
-    private final TelaListasPublicas telaListasPublicas;
+    //private final TelaListasPublicas telaListasPublicas;
+    private final TelaBuscarListas telaBusca;
 
     // janela da tela principal
     private JFrame janela;
@@ -50,6 +53,7 @@ public class TelaPrincipal {
     private JMenu menuInicio;
     private JMenu menuIdioma;
     private JMenu menuAjuda;
+    private JMenu menuListas;
 
     // Submenus da tela
     private JMenuItem menuEntrar;
@@ -59,7 +63,7 @@ public class TelaPrincipal {
     private JMenuItem menuSair;
     private JMenuItem menuSobre;
     private JMenuItem menuMinhasListas;
-    private JMenuItem menuListasPublicas;
+    private JMenuItem menuPesquisarListas;
     
     // Itens de menu específicos para usuários logados no sistema    
     private JMenuItem menuLogout;
@@ -74,7 +78,8 @@ public class TelaPrincipal {
         telaCadastroMinhasSeries = new TelaCadastroMinhasSeries(this);
         sessaoUsuario = SessaoUsuario.obterInstancia();
         TelaMinhasListas = new TelaMinhasListas(this);
-        telaListasPublicas = new TelaListasPublicas(this);
+        //telaListasPublicas = new TelaListasPublicas(this);
+        telaBusca = new TelaBuscarListas(this);
     }
 
     /**
@@ -134,12 +139,20 @@ public class TelaPrincipal {
             }
         });
         
-        menuListasPublicas.addActionListener(new ActionListener() {
+//        menuPesquisarListas.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                telaListasPublicas.inicializar();
+//            }
+//        });
+
+        menuPesquisarListas.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                telaListasPublicas.inicializar();
+                telaBusca.inicializar();
             }
         });
+
 
         menuLogout.addActionListener(new ActionListener() {
             @Override
@@ -179,6 +192,15 @@ public class TelaPrincipal {
             }
         });
     }
+    
+    private void construirMenuListas() {
+        menuListas = new JMenu(I18N.obterMenuListas());
+        menuListas.setMnemonic(I18N.obterMnemonicoMenuInicio());
+        menuPesquisarListas = new JMenuItem(I18N.obterMenuPesquisarListas(), GerenciadorDeImagens.MINHAS_SERIES);
+
+        menuListas.add(menuPesquisarListas);
+        menuPrincipal.add(menuListas);
+    }
 
     /**
      * Contrói o Menu Início, trata internacionalização
@@ -191,11 +213,10 @@ public class TelaPrincipal {
         menuLogout = new JMenuItem(I18N.obterMenuLogout(), GerenciadorDeImagens.LOGOUT);
         menuMinhasSeries = new JMenuItem(I18N.obterMenuMinhasSeries(), GerenciadorDeImagens.MINHAS_SERIES);
         menuMinhasListas = new JMenuItem(I18N.obterMenuMinhasListas(), GerenciadorDeImagens.MINHAS_SERIES);
-        menuListasPublicas = new JMenuItem(I18N.obterMenuListasPublicas(), GerenciadorDeImagens.MINHAS_SERIES);
+        
 
         if (!sessaoUsuario.estahLogado()) {
             menuInicio.add(menuEntrar);
-            menuInicio.add(menuListasPublicas);
             menuInicio.add(menuCadastrarUsuario);
             
         } else {
@@ -247,7 +268,8 @@ public class TelaPrincipal {
             // ao seu projeto que serão exibidos quando o
             // usuário estiver logado no sistema.
         }
-
+        
+        construirMenuListas();
         construirMenuIdioma();
         construirMenuAjuda();
         janela.setJMenuBar(menuPrincipal);
@@ -259,6 +281,8 @@ public class TelaPrincipal {
     private void construirTela() {
         janela = new JFrame(I18N.obterTituloTelaPrincipal());
         janela.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        janela.setResizable(true);
+        janela.setMinimumSize(new Dimension(500, 500));
         construirMenuUsuario();
     }
 
@@ -266,21 +290,19 @@ public class TelaPrincipal {
      * Exibe a tela.
      */
     private void exibirTela() {
-        janela.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        
-        // Permite que apenas o botão de fechar esteja disponível na janela.        
-        janela.setUndecorated(true);
-        janela.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
-        
-        // Seta background com logo da famosa corporação Netfrix
-        try {
-            janela.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("logo.jpg")))));
-            janela.setBackground(Color.red);
-        } catch (IOException ex) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
 
+        janela.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Permite que apenas o botão de fechar esteja disponível na janela.        
+        //janela.setUndecorated(true);
+        //janela.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
+        
+        // Seta background com logo
+        janela.setContentPane(new JLabel(GerenciadorDeImagens.LOGO));
+        janela.setBackground(Color.red);
+        janela.setIconImage(Toolkit.getDefaultToolkit().getImage("icon.png"));
+        
+        
         janela.setVisible(true);
     }
 

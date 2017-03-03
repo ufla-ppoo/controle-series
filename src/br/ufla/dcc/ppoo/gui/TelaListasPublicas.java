@@ -42,6 +42,7 @@ public class TelaListasPublicas {
     private final GerenciadorListaSeries gerenciadorListaSeries;
     private final SessaoUsuario sessaoUsuario;
     private String titulo;
+    private List<ListaSerie> listaRecebida = new ArrayList<>();
 
 
     // referência para a tela principal
@@ -72,7 +73,7 @@ public class TelaListasPublicas {
      *
      * @param telaPrincipal Referência da tela principal.
      */
-    public TelaListasPublicas(TelaPrincipal telaPrincipal) {
+    public TelaListasPublicas(TelaPrincipal telaPrincipal, List<ListaSerie> listaRecebida) {
         telaCadastroLista = new TelaCadastroLista(telaPrincipal);
         telaDetalhesLista = new TelaDetalhesLista(telaPrincipal);
         this.telaPrincipal = telaPrincipal;
@@ -80,6 +81,7 @@ public class TelaListasPublicas {
         gerenciadorSeries = new GerenciadorSeries();
         gerenciadorListaSeries = new GerenciadorListaSeries();
         gerenciadorListaSeries.recuperarListaSeriesArquivo();
+        this.listaRecebida = listaRecebida;
     }
 
     /**
@@ -103,14 +105,13 @@ public class TelaListasPublicas {
             I18N.obterRotuloListaAutor()
         };
         
-
         List<String[]> lista = new ArrayList<>();
-        
 
         // Add o titulo e o genero na lista criada utilizando expressão lambda do java 8
-        gerenciadorListaSeries.getListaDeListaSeriePublicas().stream().forEach((s) -> {
+        listaRecebida.stream().forEach((s) -> {
             lista.add(new String[]{s.getNome(),s.getUsuario().obterNome()});
         });  
+        
         
         DefaultTableModel modelo = new DefaultTableModel(lista.toArray(new String[lista.size()][]), titulosColunas);
         
@@ -189,13 +190,13 @@ public class TelaListasPublicas {
     }
 
     /**
-     * Retorna a lista de série selecionada pelo usuario para ser visualizada na TelaDetalhesLista
+     * Retorna a listaRecebida de série selecionada pelo usuario para ser visualizada na TelaDetalhesLista
      */
     private ListaSerie selecionouSerie() {
         
         int posicao = tbSeries.getSelectedRow();
         
-        ListaSerie lista= gerenciadorListaSeries.getListaDeListaSeriePublicas().get(posicao);
+        ListaSerie lista = listaRecebida.get(posicao);
         
         return lista;       
     }
