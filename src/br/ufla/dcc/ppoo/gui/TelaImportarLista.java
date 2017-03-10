@@ -7,6 +7,7 @@ import br.ufla.dcc.ppoo.modelo.Serie;
 import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
 import br.ufla.dcc.ppoo.servicos.GerenciadorListaSeries;
 import br.ufla.dcc.ppoo.servicos.GerenciadorSeries;
+import br.ufla.dcc.ppoo.servicos.GerenciadorUsuarios;
 import br.ufla.dcc.ppoo.util.Utilidades;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -18,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,19 +33,18 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Classe que representa a tela de Listas Publicas
+ * Classe que representa a tela Minhas Séries
  *
  * @author Breno
  */
-public class TelaListasPublicas {
-    private final TelaCadastroLista telaCadastroLista;
-    private final TelaDetalhesLista telaDetalhesLista;
+public class TelaImportarLista {
+    
     private final GerenciadorSeries gerenciadorSeries;
-    private final GerenciadorListaSeries gerenciadorListaSeries;
+    private final GerenciadorListaSeries gerenciadorListaSeries; 
     private final SessaoUsuario sessaoUsuario;
     private String titulo;
-    private List<ListaSerie> listaRecebida = new ArrayList<>();
-
+    private Boolean confereSerie = true;
+    private ListaSerie listaSerie;
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
@@ -52,20 +53,14 @@ public class TelaListasPublicas {
     private JDialog janela;
     private GridBagLayout layout;
     private GridBagConstraints gbc;
-    private JButton btnVisualizarLista;
+    private JButton btnSalvarSerie;
     private JButton btnCancelar;
-    private JButton btnImportarLista;
     private JTable tbSeries;
-    private JLabel lbTitulo;
-    private JLabel lbNumTemporadas;
-    private JLabel lbAno;
-    private JLabel lbGenero;
-    private JLabel lbElenco;
-    private JTextField txtTitulo;
-    private JTextField txtNumTemporadas;
-    private JTextField txtAno;
-    private JTextField txtGenero;
-    private JTextArea taElenco;
+    private JLabel lbNomeLista;
+    private JLabel lbTag;
+    private JTextField txtNomeLista;
+    private JTextField txtTags;
+    private JCheckBox checkBox;
 
     
 
@@ -74,15 +69,14 @@ public class TelaListasPublicas {
      *
      * @param telaPrincipal Referência da tela principal.
      */
-    public TelaListasPublicas(TelaPrincipal telaPrincipal, List<ListaSerie> listaRecebida) {
-        telaCadastroLista = new TelaCadastroLista(telaPrincipal);
-        telaDetalhesLista = new TelaDetalhesLista(telaPrincipal);
+    public TelaImportarLista(TelaPrincipal telaPrincipal, ListaSerie listaSerie) {
         this.telaPrincipal = telaPrincipal;
+        this.listaSerie = listaSerie;
         sessaoUsuario = SessaoUsuario.obterInstancia();
         gerenciadorSeries = new GerenciadorSeries();
         gerenciadorListaSeries = new GerenciadorListaSeries();
+        gerenciadorSeries.RecuperarSeriesArquivo();
         gerenciadorListaSeries.recuperarListaSeriesArquivo();
-        this.listaRecebida = listaRecebida;
     }
 
     /**
@@ -102,18 +96,16 @@ public class TelaListasPublicas {
     private void construirTabela() {
         
         Object[] titulosColunas = {
-            I18N.obterRotuloListaTitulo(),
-            I18N.obterRotuloListaAutor()
+            I18N.obterRotuloSerie()
         };
         
         List<String[]> lista = new ArrayList<>();
+        
+         // Add o titulo e o genero na lista criada utilizando expressão lambda do java 8
+        listaSerie.getSeries().stream().forEach((s) -> {
+            lista.add(new String[]{s.getTitulo()});
+        });
 
-        // Add o titulo e o genero na lista criada utilizando expressão lambda do java 8
-        listaRecebida.stream().forEach((s) -> {
-            lista.add(new String[]{s.getNome(),s.getUsuario().obterNome()});
-        });  
-        
-        
         DefaultTableModel modelo = new DefaultTableModel(lista.toArray(new String[lista.size()][]), titulosColunas);
         
         tbSeries = new JTable();
@@ -145,9 +137,13 @@ public class TelaListasPublicas {
     private void prepararComponentesEstadoInicial() {
         tbSeries.clearSelection();
         tbSeries.setEnabled(true);
+        tbSeries.selectAll();
 
-        btnImportarLista.setEnabled(false);
-        btnVisualizarLista.setEnabled(false);
+        txtNomeLista.setText(listaSerie.getNome());
+        txtTags.setText(listaSerie.getPalavrasChave());
+        checkBox.setEnabled(true);
+        checkBox.setSelected(true);
+
         btnCancelar.setEnabled(true);
     }
 
@@ -155,9 +151,7 @@ public class TelaListasPublicas {
      * Trata o estado da tela para seleção de séries
      */
     private void prepararComponentesEstadoSelecaoSerie() {
-
-        btnImportarLista.setEnabled(true);
-        btnVisualizarLista.setEnabled(true);
+        btnSalvarSerie.setEnabled(true);
         btnCancelar.setEnabled(true);
     }
 
@@ -165,32 +159,56 @@ public class TelaListasPublicas {
      * Adiciona os componentes da tela tratando layout e internacionalização
      */
     private void adicionarComponentes() {
+        
         construirTabela();
+        
         JScrollPane scrollPaneTabela = new JScrollPane(tbSeries);
+        
         adicionarComponente(scrollPaneTabela,
                 GridBagConstraints.CENTER,
                 GridBagConstraints.NONE,
                 0, 0, 4, 1);
 
-
-        btnVisualizarLista = new JButton(I18N.obterBotaoVisualizar(),
-                GerenciadorDeImagens.SOBRE);
+        lbNomeLista = new JLabel(I18N.obterRotuloListaTitulo());
+        adicionarComponente(lbNomeLista,
+                GridBagConstraints.LINE_END,
+                GridBagConstraints.NONE,
+                1, 0, 1, 1);
+        
+        txtNomeLista = new JTextField(25);
+        adicionarComponente(txtNomeLista,
+                GridBagConstraints.LINE_START,
+                GridBagConstraints.HORIZONTAL,
+                1, 1, 3, 1);
+        
+        lbTag = new JLabel(I18N.obterRotuloListaTags());
+        adicionarComponente(lbTag,
+                GridBagConstraints.LINE_END,
+                GridBagConstraints.NONE,
+                2, 0, 1, 1);
+        
+        txtTags = new JTextField(25);
+        adicionarComponente(txtTags,
+                GridBagConstraints.LINE_START,
+                GridBagConstraints.HORIZONTAL,
+                2, 1, 3, 1);
+        
+        checkBox = new JCheckBox(I18N.obterRotuloListaPrivado());
+        adicionarComponente(checkBox,
+                GridBagConstraints.LINE_START,
+                GridBagConstraints.HORIZONTAL,
+                3, 3, 1, 1);
+        
+        btnSalvarSerie = new JButton(I18N.obterBotaoImportar(),
+                GerenciadorDeImagens.OK);
 
         btnCancelar = new JButton(I18N.obterBotaoCancelar(),
                 GerenciadorDeImagens.CANCELAR);
-        
-        btnImportarLista = new JButton(I18N.obterBotaImportar(),
-        GerenciadorDeImagens.NOVO);
 
         prepararComponentesEstadoInicial();
 
         JPanel painelBotoes = new JPanel();
-        
-        if (sessaoUsuario.estahLogado()){
-            painelBotoes.add(btnImportarLista);
-        }
-        
-        painelBotoes.add(btnVisualizarLista);
+        painelBotoes.add(btnSalvarSerie);
         painelBotoes.add(btnCancelar);
 
         adicionarComponente(painelBotoes,
@@ -200,16 +218,25 @@ public class TelaListasPublicas {
     }
 
     /**
-     * Retorna a listaRecebida de série selecionada pelo usuario para ser visualizada na TelaDetalhesLista
+     * Trata a selação de séries na grade.
      */
-    private ListaSerie selecionouSerie() {
+    private List selecionouSerie() {
+          
+        List<Serie> lista = new ArrayList<>();      
+        lista = listaSerie.getSeries();
         
-        int posicao = tbSeries.getSelectedRow();
+        List<Serie> listaFinal= new ArrayList<>(); // lista final com series selecionadas       
+       
+        int[] indices = tbSeries.getSelectedRows(); // array com indices das series selecionadas na lista
         
-        ListaSerie lista = listaRecebida.get(posicao);
+        for(int i=0; i < indices.length; i++){ 
+            listaFinal.add(lista.get(indices[i]));
+        }
         
-        return lista;       
+        return listaFinal;
+       
     }
+    
 
     /**
      * Configura os eventos da tela.
@@ -222,28 +249,17 @@ public class TelaListasPublicas {
             }
         });
         
-        btnVisualizarLista.addActionListener(new ActionListener() {
+        btnSalvarSerie.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ListaSerie listaParaMostrar = selecionouSerie();
-                telaDetalhesLista.setListaSerieParaMostrar(listaParaMostrar); // Envia a listaSerie para ser exibida
-                telaDetalhesLista.inicializar();
-            }
-        });
-        
-        btnImportarLista.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new TelaImportarLista(telaPrincipal, selecionouSerie()).inicializar();
-            }
-        });
-
-
-        tbSeries.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                prepararComponentesEstadoSelecaoSerie();
-                selecionouSerie();
+                List<Serie> seriesSelecionadas = selecionouSerie();
+                ListaSerie listaSerie = new ListaSerie(txtNomeLista.getText(),checkBox.isSelected(), txtTags.getText(), sessaoUsuario.obterUsuario(), seriesSelecionadas);
+                gerenciadorListaSeries.cadastrarListaSeries(listaSerie);
+                gerenciadorListaSeries.salvarListaSeriesArquivo();
+                Utilidades.msgInformacao(I18N
+                        .obterSucessoImportarListaSerie());
+                janela.dispose();
+               // atualiza(); // metodo criado para evitar repetiçãocomo foi notificado pelo prof. no feedback
             }
         });
     }
@@ -253,7 +269,7 @@ public class TelaListasPublicas {
      */
     private void construirTela() {
         janela = new JDialog();
-        janela.setTitle(I18N.obterTituloTelaListasPublicas());
+        janela.setTitle(I18N.obterTituloTelaImportarLista());
         layout = new GridBagLayout();
         gbc = new GridBagConstraints();
         janela.setLayout(layout);
@@ -277,5 +293,26 @@ public class TelaListasPublicas {
         prepararComponentesEstadoInicial();      
         janela.dispose();
         inicializar();
-    }    
+    }
+    
+    private boolean camposEstaoVazios(Serie serie) {
+        if (serie.getTitulo().isEmpty()|| serie.getAnoLancamento().isEmpty() ||
+                       serie.getElenco().isEmpty() || serie.getNumeroDeTemporadas().isEmpty()
+                         || serie.getGenero().isEmpty()){
+            return true;
+        } else return false;
+    }
+    
+    private boolean nomeEhIgual(Serie serie) {
+        List<Serie> lista = new ArrayList<>();
+        lista = gerenciadorSeries.getListaSerie(sessaoUsuario.obterUsuario());
+        
+            for (Serie serie1 : lista) {
+                if (serie1.getTitulo().equals(serie.getTitulo())){
+                return true;
+                }
+            }
+            
+        return false;
+    }
 }

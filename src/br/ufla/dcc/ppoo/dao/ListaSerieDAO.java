@@ -19,4 +19,6 @@ public interface ListaSerieDAO {
     public void salvarListaSeriesArquivo();
     
     public void recuperarListaSeriesArquivo();
+    
+    public void deletarListaSerie(String nome, Usuario usuario);
 }

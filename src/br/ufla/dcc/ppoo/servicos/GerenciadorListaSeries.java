@@ -47,5 +47,9 @@ public class GerenciadorListaSeries {
     public void recuperarListaSeriesArquivo(){
         repositorioListaSerie.recuperarListaSeriesArquivo();
     }
+    
+    public void deletarListaSerie(String nome){
+        repositorioListaSerie.deletarListaSerie(nome, sessaoUsuario.obterUsuario());
+    }
 
 }

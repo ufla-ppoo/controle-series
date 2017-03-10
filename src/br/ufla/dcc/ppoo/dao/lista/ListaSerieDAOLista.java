@@ -43,7 +43,8 @@ public class ListaSerieDAOLista implements ListaSerieDAO, Serializable {
 
     @Override
     public void adicionarLista(ListaSerie listaSerie) {
-        listaDeListasSerie.add(listaSerie);        
+        listaDeListasSerie.add(listaSerie);
+        salvarListaSeriesArquivo();
     }
 
     @Override
@@ -96,6 +97,21 @@ public class ListaSerieDAOLista implements ListaSerieDAO, Serializable {
         } 
         catch (Exception e) {}
         
+    }
+    
+    /**
+     * Deleta ListaSerie
+     *
+     */
+    @Override
+    public void deletarListaSerie(String nome, Usuario usuario) {
+        
+        for (int i=0; i< listaDeListasSerie.size(); i++) {
+            if (listaDeListasSerie.get(i).getNome().equals(nome) && listaDeListasSerie.get(i).getUsuario().obterLogin().equals(usuario.obterLogin())){      
+                listaDeListasSerie.remove(i);
+                salvarListaSeriesArquivo();
+            }
+        }
     }
     
 }

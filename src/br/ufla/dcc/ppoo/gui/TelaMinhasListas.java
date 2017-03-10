@@ -2,6 +2,7 @@ package br.ufla.dcc.ppoo.gui;
 
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
+import br.ufla.dcc.ppoo.modelo.ListaSerie;
 import br.ufla.dcc.ppoo.modelo.Serie;
 import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
 import br.ufla.dcc.ppoo.servicos.GerenciadorListaSeries;
@@ -43,6 +44,7 @@ public class TelaMinhasListas {
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
+    private final TelaDetalhesLista telaDetalhesLista;
 
     // componentes da tela
     private JDialog janela;
@@ -51,7 +53,7 @@ public class TelaMinhasListas {
     private JButton btnNovaLista;
     private JButton btnEditarLista;
     private JButton btnDeletarSLista;
-    private JButton btnSalvarLista;
+    private JButton btnDetalhesLista;
     private JButton btnCancelar;
     private JTable tbSeries;
     private JLabel lbTitulo;
@@ -75,6 +77,7 @@ public class TelaMinhasListas {
     public TelaMinhasListas(TelaPrincipal telaPrincipal) {
         telaCadastroLista = new TelaCadastroLista(telaPrincipal);
         this.telaPrincipal = telaPrincipal;
+        telaDetalhesLista = new TelaDetalhesLista(telaPrincipal);
         sessaoUsuario = SessaoUsuario.obterInstancia();
         gerenciadorSeries = new GerenciadorSeries();
         gerenciadorListaSeries = new GerenciadorListaSeries();
@@ -109,13 +112,14 @@ public class TelaMinhasListas {
             lista.add(new String[]{s.getNome(),s.getUsuario().obterNome()});
         });  
         
-        // Modelo utilizado na Jtable de músicas
+        // Modelo utilizado na Jtable de séries
         DefaultTableModel modelo = new DefaultTableModel(lista.toArray(new String[lista.size()][]), titulosColunas);
         
         tbSeries = new JTable();
         tbSeries.setModel(modelo);
         tbSeries.setPreferredScrollableViewportSize(new Dimension(500, 70));
         tbSeries.setFillsViewportHeight(true);
+
     }
 
     /**
@@ -141,11 +145,12 @@ public class TelaMinhasListas {
     private void prepararComponentesEstadoInicial() {
         tbSeries.clearSelection();
         tbSeries.setEnabled(true);
+        tbSeries.setDefaultEditor(Object.class, null);
 
         btnNovaLista.setEnabled(true);
         btnEditarLista.setEnabled(false);
-        btnSalvarLista.setEnabled(false);
         btnDeletarSLista.setEnabled(false);
+        btnDetalhesLista.setEnabled(false);
         btnCancelar.setEnabled(true);
     }
 
@@ -156,8 +161,8 @@ public class TelaMinhasListas {
 
         btnNovaLista.setEnabled(true);
         btnEditarLista.setEnabled(true);
-        btnSalvarLista.setEnabled(false);
         btnDeletarSLista.setEnabled(true);
+        btnDetalhesLista.setEnabled(true);
         btnCancelar.setEnabled(true);
     }
 
@@ -179,21 +184,21 @@ public class TelaMinhasListas {
         btnEditarLista = new JButton(I18N.obterBotaoEditar(),
                 GerenciadorDeImagens.EDITAR);
 
-        btnSalvarLista = new JButton(I18N.obterBotaoSalvar(),
-                GerenciadorDeImagens.OK);
-
         btnDeletarSLista = new JButton(I18N.obterBotaoDeletar(),
                 GerenciadorDeImagens.DELETAR);
 
         btnCancelar = new JButton(I18N.obterBotaoCancelar(),
                 GerenciadorDeImagens.CANCELAR);
 
+        btnDetalhesLista = new JButton(I18N.obterBotaoVisualizar(),
+                GerenciadorDeImagens.SOBRE);
+        
         prepararComponentesEstadoInicial();
 
         JPanel painelBotoes = new JPanel();
         painelBotoes.add(btnNovaLista);
-        painelBotoes.add(btnEditarLista);
-        painelBotoes.add(btnSalvarLista);
+        painelBotoes.add(btnDetalhesLista);
+        //painelBotoes.add(btnEditarLista);
         painelBotoes.add(btnDeletarSLista);
         painelBotoes.add(btnCancelar);
 
@@ -206,8 +211,14 @@ public class TelaMinhasListas {
     /**
      * Trata a selação de séries na grade.
      */
-    private void selecionouSerie() {
-        // Sem implementação por enquanto. =)      
+    private ListaSerie selecionouSerie() {
+        
+        int posicao = tbSeries.getSelectedRow();
+        
+        List<ListaSerie> listaDeLista = gerenciadorListaSeries.getListadeListaSerie(sessaoUsuario.obterUsuario());
+        ListaSerie listaSerie = listaDeLista.get(posicao);
+        
+        return listaSerie;       
     }
     
 
@@ -219,6 +230,27 @@ public class TelaMinhasListas {
             @Override
             public void actionPerformed(ActionEvent e) {
                 janela.dispose();
+            }
+        });
+        
+        btnDeletarSLista.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (Utilidades.msgConfirmacao(I18N.obterConfirmacaoDeletar())) {
+                    gerenciadorListaSeries.deletarListaSerie(selecionouSerie().getNome());
+                    Utilidades.msgInformacao(I18N.obterSucessoDeletarListaSerie());
+                    atualiza();
+                }
+                
+            }
+        });
+        
+        btnDetalhesLista.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ListaSerie listaParaMostrar = selecionouSerie();
+                telaDetalhesLista.setListaSerieParaMostrar(listaParaMostrar); // Envia a listaSerie para ser exibida
+                telaDetalhesLista.inicializar();
             }
         });
 

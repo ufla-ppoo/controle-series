@@ -263,6 +263,10 @@ public class I18N {
         return rb.getString("sucesso.lista.cadastro");
     }
     
+    public static String obterSucessoImportarListaSerie() {
+        return rb.getString("sucesso.lista.importar");
+    }
+    
     /**
      * Retorna o texto da mensagem de cadastro de série efetuado com sucesso.
      *
@@ -273,12 +277,21 @@ public class I18N {
     }
     
      /**
-     * Retorna o texto da mensagem de cadastro de série efetuado com sucesso.
+     * Retorna o texto da mensagem de remoção de série efetuado com sucesso.
      *
-     * @return Retorna o texto da mensagem de cadastro de série efetuado com sucesso.
+     * @return Retorna o texto da mensagem de remoção de série efetuado com sucesso.
      */
     public static String obterSucessoDeletarSerie() {
         return rb.getString("sucesso.serie.deletar");
+    }
+    
+    /**
+     * Retorna o texto da mensagem de remoção de ListaSérie efetuado com sucesso.
+     *
+     * @return Retorna o texto da mensagem de remoção de ListaSérie efetuado com sucesso.
+     */
+    public static String obterSucessoDeletarListaSerie() {
+        return rb.getString("sucesso.lista.deletar");
     }
 
     /**
@@ -379,7 +392,10 @@ public class I18N {
     public static String obterTituloTelaCadastrarLista() {
         return rb.getString("tela.lista.cadastrar");
     }
-    
+        
+    public static String obterTituloTelaImportarLista() {
+        return rb.getString("tela.lista.importar");
+    }
     /**
      * Retorna o título da tela de Cadastro de Usuários.
      *
@@ -388,7 +404,18 @@ public class I18N {
     public static String obterTituloTelaCadastrarUsuario() {
         return rb.getString("tela.cadastrousuario.titulo");
     }
+    
+    
 
+     /**
+     * Retorna o título da tela de Listas Publicas.
+     *
+     * @return Título da tela de Listas Publicas.
+     */
+    public static String obterTituloTelaListasPublicas() {
+        return rb.getString("tela.listas.publicas");
+    }
+    
     /**
      * Retorna o texto do rótulo login do usuário.
      *
@@ -439,6 +466,14 @@ public class I18N {
     }
     
     /**
+     * Retorna o texto do botão Importar.
+     *
+     * @return Texto do botão Importar.
+     */
+    public static String obterBotaoImportar() {
+        return rb.getString("botao.importar");
+    }
+    /**
      * Retorna o texto do botão Buscar.
      *
      * @return Texto do botão Buscar.
@@ -455,6 +490,15 @@ public class I18N {
      */
     public static String obterBotaoNovo() {
         return rb.getString("botao.novo");
+    }
+    
+    /**
+     * Retorna o texto do botão Novo.
+     *
+     * @return Texto do botão Novo.
+     */
+    public static String obterBotaImportar() {
+        return rb.getString("botao.importar");
     }
 
     /**
