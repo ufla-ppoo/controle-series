@@ -44,7 +44,6 @@ public class TelaMinhasListas {
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
-    private final TelaDetalhesLista telaDetalhesLista;
 
     // componentes da tela
     private JDialog janela;
@@ -77,7 +76,6 @@ public class TelaMinhasListas {
     public TelaMinhasListas(TelaPrincipal telaPrincipal) {
         telaCadastroLista = new TelaCadastroLista(telaPrincipal);
         this.telaPrincipal = telaPrincipal;
-        telaDetalhesLista = new TelaDetalhesLista(telaPrincipal);
         sessaoUsuario = SessaoUsuario.obterInstancia();
         gerenciadorSeries = new GerenciadorSeries();
         gerenciadorListaSeries = new GerenciadorListaSeries();
@@ -249,8 +247,7 @@ public class TelaMinhasListas {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListaSerie listaParaMostrar = selecionouSerie();
-                telaDetalhesLista.setListaSerieParaMostrar(listaParaMostrar); // Envia a listaSerie para ser exibida
-                telaDetalhesLista.inicializar();
+                new TelaDetalhesLista(telaPrincipal, listaParaMostrar).inicializar();
             }
         });
 

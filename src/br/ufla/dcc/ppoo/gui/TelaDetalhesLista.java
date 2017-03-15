@@ -43,6 +43,7 @@ public class TelaDetalhesLista {
     private final SessaoUsuario sessaoUsuario;
     private String titulo;
     private ListaSerie listaSerie;
+    public static boolean verificador = false;
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
@@ -52,6 +53,7 @@ public class TelaDetalhesLista {
     private GridBagLayout layout;
     private GridBagConstraints gbc;
     private JButton btnCancelar;
+    private JButton btnAvaliar;
     private JTable tbSeries;
     private JLabel lbNomeLista;
     private JLabel lbNomeAutor;
@@ -67,7 +69,8 @@ public class TelaDetalhesLista {
      *
      * @param telaPrincipal Referência da tela principal.
      */
-    public TelaDetalhesLista(TelaPrincipal telaPrincipal) {
+    public TelaDetalhesLista(TelaPrincipal telaPrincipal, ListaSerie listaSerie) {
+        this.listaSerie = listaSerie;
         this.telaPrincipal = telaPrincipal;
         sessaoUsuario = SessaoUsuario.obterInstancia();
         gerenciadorSeries = new GerenciadorSeries();
@@ -139,10 +142,11 @@ public class TelaDetalhesLista {
         txtNomeAutor.setEditable(false);
         txtTags.setEditable(false);
         
-        txtNomeLista.setText(listaSerie.getNome());
+        txtNomeLista.setText(listaSerie.getNome() + " (" + listaSerie.getPontos() + ")");
         txtTags.setText(listaSerie.getPalavrasChave());
         txtNomeAutor.setText(listaSerie.getUsuario().obterNome());
         btnCancelar.setEnabled(true);
+        btnAvaliar.setEnabled(true);
     }
 
     /**
@@ -150,6 +154,7 @@ public class TelaDetalhesLista {
      */
     private void prepararComponentesEstadoSelecaoSerie() {
         btnCancelar.setEnabled(true);
+        btnAvaliar.setEnabled(true);
     }
 
     /**
@@ -202,12 +207,19 @@ public class TelaDetalhesLista {
                 GridBagConstraints.HORIZONTAL,
                 3, 1, 3, 1);        
 
+        btnAvaliar = new JButton(I18N.obterBotaoAvaliar(),
+        GerenciadorDeImagens.EDITAR);
+        
         btnCancelar = new JButton(I18N.obterBotaoCancelar(),
                 GerenciadorDeImagens.CANCELAR);
 
         prepararComponentesEstadoInicial();
 
         JPanel painelBotoes = new JPanel();
+        
+        if (sessaoUsuario.estahLogado() && !(listaSerie.getUsuario().obterLogin().equals(sessaoUsuario.obterUsuario().obterLogin()))){
+            painelBotoes.add(btnAvaliar);
+        }
         painelBotoes.add(btnCancelar);
 
         adicionarComponente(painelBotoes,
@@ -244,9 +256,29 @@ public class TelaDetalhesLista {
         btnCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                verificador = false;
                 janela.dispose();
             }
         });
+        
+        btnAvaliar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!listaSerie.usuarioJaAvaliou(sessaoUsuario.obterUsuario())){
+                    
+                    new TelaAvaliarLista(telaPrincipal, listaSerie).inicializar();
+                        
+                        if (verificador == true){
+                            janela.dispose();
+                        }
+                } else {
+                    
+                Utilidades.msgErro(I18N.obterErroListaJaAvaliada());
+                
+                } 
+            }
+        });
+        
         
     }
 
@@ -281,8 +313,4 @@ public class TelaDetalhesLista {
         inicializar();
     }
 
-    
-    public void setListaSerieParaMostrar(ListaSerie listaSerie){
-        this.listaSerie = listaSerie;
-    }
 }

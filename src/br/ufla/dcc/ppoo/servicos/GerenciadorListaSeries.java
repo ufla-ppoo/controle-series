@@ -51,5 +51,9 @@ public class GerenciadorListaSeries {
     public void deletarListaSerie(String nome){
         repositorioListaSerie.deletarListaSerie(nome, sessaoUsuario.obterUsuario());
     }
+    
+    public void avaliarListaSerie(int nota, ListaSerie listaSerie, Usuario usuarioAvaliador){
+        repositorioListaSerie.avaliarListaSerie(nota, listaSerie, usuarioAvaliador);
+    }
 
 }

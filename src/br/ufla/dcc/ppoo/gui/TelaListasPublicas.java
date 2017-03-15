@@ -1,5 +1,6 @@
 package br.ufla.dcc.ppoo.gui;
 
+import static br.ufla.dcc.ppoo.gui.TelaDetalhesLista.verificador;
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
 import br.ufla.dcc.ppoo.modelo.ListaSerie;
@@ -37,7 +38,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TelaListasPublicas {
     private final TelaCadastroLista telaCadastroLista;
-    private final TelaDetalhesLista telaDetalhesLista;
     private final GerenciadorSeries gerenciadorSeries;
     private final GerenciadorListaSeries gerenciadorListaSeries;
     private final SessaoUsuario sessaoUsuario;
@@ -76,7 +76,6 @@ public class TelaListasPublicas {
      */
     public TelaListasPublicas(TelaPrincipal telaPrincipal, List<ListaSerie> listaRecebida) {
         telaCadastroLista = new TelaCadastroLista(telaPrincipal);
-        telaDetalhesLista = new TelaDetalhesLista(telaPrincipal);
         this.telaPrincipal = telaPrincipal;
         sessaoUsuario = SessaoUsuario.obterInstancia();
         gerenciadorSeries = new GerenciadorSeries();
@@ -226,8 +225,11 @@ public class TelaListasPublicas {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListaSerie listaParaMostrar = selecionouSerie();
-                telaDetalhesLista.setListaSerieParaMostrar(listaParaMostrar); // Envia a listaSerie para ser exibida
-                telaDetalhesLista.inicializar();
+                new TelaDetalhesLista(telaPrincipal, listaParaMostrar).inicializar();
+                
+                if (verificador == true){
+                    janela.dispose();
+                }
             }
         });
         

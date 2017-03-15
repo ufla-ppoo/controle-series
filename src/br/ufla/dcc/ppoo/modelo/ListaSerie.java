@@ -1,19 +1,22 @@
 package br.ufla.dcc.ppoo.modelo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author Breno
  */
-public class ListaSerie implements Serializable {
+public class ListaSerie implements Serializable, Comparable<ListaSerie> {
     
     private String nome;
     private boolean privado = true;
     String palavrasChave;
     Usuario usuario;
     List<Serie> series;
+    private int pontos = 0;
+    List<Usuario> avaliadores;
 
     public ListaSerie(String nome, boolean visivel, String palavrasChave, Usuario usuario, List<Serie> series) {
         this.nome = nome;
@@ -21,6 +24,7 @@ public class ListaSerie implements Serializable {
         this.palavrasChave = palavrasChave;
         this.usuario = usuario;
         this.series = series;
+        avaliadores = new ArrayList<Usuario>();
     }
 
     public String getNome() {
@@ -63,5 +67,39 @@ public class ListaSerie implements Serializable {
         this.series = series;
     }
     
+    public void setAvaliacao(int nota, Usuario usuarioAvaliador){
+        pontos+= nota;
+        avaliadores.add(usuarioAvaliador);
+        
+    }
+    
+    public boolean usuarioJaAvaliou(Usuario usuario){
+        
+        for (int i = 0; i < avaliadores.size(); i++){
+            if (avaliadores.get(i).obterLogin().equals(usuario.obterLogin())){
+                return true;
+            }
+        }
+        
+        return false;
+    } 
+
+    public int getPontos() {
+        return pontos;
+    }
+    
+    // Compara listas por pontos para ordenação.
+    @Override
+    public int compareTo(ListaSerie lista) {
+        
+        if (this.getPontos() < lista.getPontos()) {
+            return 1;
+        }
+        if (this.getPontos() > lista.getPontos()) {
+            return -1;
+        }
+        
+        return 0;        
+    }
     
 }

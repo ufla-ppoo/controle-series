@@ -5,6 +5,7 @@ import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
 import br.ufla.dcc.ppoo.modelo.ListaSerie;
 import br.ufla.dcc.ppoo.modelo.Usuario;
+import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
 import br.ufla.dcc.ppoo.servicos.GerenciadorListaSeries;
 import br.ufla.dcc.ppoo.servicos.GerenciadorUsuarios;
 import br.ufla.dcc.ppoo.util.Utilidades;
@@ -15,37 +16,45 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import javafx.print.Collation;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * Classe que representa a Tela de Autenticação (login no sistema)
  *
  * @author Breno
  */
-public class TelaBuscarListas {
+public class TelaAvaliarLista {
+    
+    
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
     // referência para o gerenciador de usuários
     private final GerenciadorUsuarios gerenciadorUsuarios;
     private final GerenciadorListaSeries gerenciadorListaSeries;
+    private final SessaoUsuario sessaoUsuario;
     // componentes da tela
     private JDialog janela;
     private GridBagLayout layout;
     private GridBagConstraints gbc;
-    private JLabel lbBusca;
-    private JTextField txtBusca;
-    private JButton btnBuscar;
+    private JButton btnAvaliar;
     private JButton btnCancelar;
+    private JLabel lbCH;
+    private JLabel lbSlider;
+    private JSlider slider;
+    
+    private ListaSerie listaSerie;
 
     /**
      * Constrói a tela de autenticação guardando a referência da tela principal
@@ -53,10 +62,12 @@ public class TelaBuscarListas {
      * 
      * @param telaPrincipal Referência da tela principal.
      */
-    public TelaBuscarListas(TelaPrincipal telaPrincipal) {
+    public TelaAvaliarLista(TelaPrincipal telaPrincipal, ListaSerie listaSerie) {
         this.gerenciadorUsuarios = new GerenciadorUsuarios();
+        this.listaSerie = listaSerie;
         this.telaPrincipal = telaPrincipal;
         gerenciadorListaSeries = new GerenciadorListaSeries();
+        sessaoUsuario = SessaoUsuario.obterInstancia();
         gerenciadorListaSeries.recuperarListaSeriesArquivo();
     }
 
@@ -92,27 +103,39 @@ public class TelaBuscarListas {
      */
     private void adicionarComponentes() {
 
-        txtBusca = new JTextField(25);
-        adicionarComponente(txtBusca,
-                GridBagConstraints.LINE_START,
+        lbCH = new JLabel(I18N.obterRotuloAvaliar());
+        adicionarComponente(lbCH,
+                GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
-                0, 1, 1, 1);
+                0, 0, 1, 1);
+        
+        slider = new JSlider(SwingConstants.HORIZONTAL, 1, 5, 3);
+        slider.setMajorTickSpacing(1);
+        slider.setPaintLabels(true);
+        slider.setPaintTicks(true);
+        
+        lbSlider = new JLabel(I18N.obterRotuloAvaliar());
+        adicionarComponente(slider,
+                GridBagConstraints.LINE_END,
+                GridBagConstraints.NONE,
+                2, 0, 2, 1);
+        
+        
 
-
-        btnBuscar = new JButton(I18N.obterBotaoBuscar(),
+        btnAvaliar = new JButton(I18N.obterBotaoAvaliar(),
                 GerenciadorDeImagens.OK);
 
         btnCancelar = new JButton(I18N.obterBotaoCancelar(),
                 GerenciadorDeImagens.CANCELAR);
 
         JPanel painelBotoes = new JPanel();
-        painelBotoes.add(btnBuscar);
+        painelBotoes.add(btnAvaliar);
         painelBotoes.add(btnCancelar);
 
         adicionarComponente(painelBotoes,
                 GridBagConstraints.CENTER,
                 GridBagConstraints.NONE,
-                2, 0, 2, 1);
+                3, 0, 3, 1);
     }
 
     /**
@@ -129,39 +152,27 @@ public class TelaBuscarListas {
      */
     private void configurarEventosTela() {
         
-        btnBuscar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                List<ListaSerie> lista = new ArrayList<>(); 
-
-                // Faz a pesquisa das listas com o conteúdo digitado na busca e salva em uma lista
-                gerenciadorListaSeries.getListaDeListaSeriePublicas().stream().forEach((s) -> {
-                    if (s.getNome().contains(txtBusca.getText()) || s.getPalavrasChave().contains(txtBusca.getText())){
-                        
-                        lista.add(s);
-                    }
-                });
-
-                if (lista.isEmpty()){
-                    new Utilidades().msgErro("Nenhum resultado encontrado!");
-                } else {
-                    // ordena as listas por pontos
-                    Collections.sort(lista);
-                    new TelaListasPublicas(telaPrincipal, lista).inicializar();
-                    
-                    if (verificador == false){
-                        janela.dispose();
-                    }
-                }
-            }
-        });
-
         btnCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 janela.dispose();
             }
+        });
+        
+        btnAvaliar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            if (listaSerie.usuarioJaAvaliou(sessaoUsuario.obterUsuario())){
+                verificador = false;
+                Utilidades.msgErro(I18N.obterErroListaJaAvaliada());
+            } else {
+                    gerenciadorListaSeries.avaliarListaSerie(slider.getValue(), listaSerie, sessaoUsuario.obterUsuario());
+                    Utilidades.msgInformacao(I18N.obterSucessoListaAvaliada());
+                    verificador = true;
+                    janela.dispose();
+                }
+            }
+            
         });
     }
 
@@ -170,7 +181,7 @@ public class TelaBuscarListas {
      */
     private void construirTela() {
         janela = new JDialog();
-        janela.setTitle(I18N.obterTituloTelaBuscarListas());
+        janela.setTitle(I18N.obterTituloTelaAvaliarListas());
         layout = new GridBagLayout();
         gbc = new GridBagConstraints();
         janela.setLayout(layout);
@@ -188,4 +199,7 @@ public class TelaBuscarListas {
         janela.setVisible(true);
         janela.setResizable(false);
     }
+    
 }
+
+

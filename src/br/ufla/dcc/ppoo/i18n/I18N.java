@@ -249,6 +249,15 @@ public class I18N {
     public static String obterErroTitulosIguais() {
         return rb.getString("erro.serie.titulos_iguais");
     }
+    
+    /**
+     * Retorna o texto da mensagem de lista já avaliada.
+     *
+     * @return Texto da mensagem de de lista já avaliada.
+     */    
+    public static String obterErroListaJaAvaliada() {
+        return rb.getString("erro.lista.ja_avaliada");
+    }
 
     /**
      * Retorna o texto da mensagem de cadastro de usuário efetuado com sucesso.
@@ -292,6 +301,15 @@ public class I18N {
      */
     public static String obterSucessoDeletarListaSerie() {
         return rb.getString("sucesso.lista.deletar");
+    }
+    
+    /**
+     * Retorna o texto da mensagem de ListaSérie avaliada com sucesso.
+     *
+     * @return Retorna o texto da mensagem  de ListaSérie avaliada com sucesso.
+     */
+    public static String obterSucessoListaAvaliada() {
+        return rb.getString("sucesso.lista.avaliada");
     }
 
     /**
@@ -356,6 +374,16 @@ public class I18N {
     public static String obterTituloTelaBuscarListas() {
         return rb.getString("tela.buscarlistas.titulo");
     }
+       
+    /**
+     * Retorna o título da tela AvaliarListas.
+     *
+     * @return Título da tela AvaliarListas.
+     */
+    public static String obterTituloTelaAvaliarListas() {
+        return rb.getString("tela.avaliar_listas.titulo");
+    }
+       
         
         
     public static String obterTituloTelaDetalhes() {
@@ -426,6 +454,15 @@ public class I18N {
     }
 
     /**
+     * Retorna o texto do rótulo avaliação.
+     *
+     * @return Texto do rótulo avaliação.
+     */
+    public static String obterRotuloAvaliar() {
+        return rb.getString("rotulo.lista.avaliar");
+    }
+
+    /**
      * Retorna o texto do rótulo senha do usuário.
      *
      * @return Texto do rótulo senha do usuário.
@@ -454,6 +491,15 @@ public class I18N {
      */
     public static String obterBotaoCancelar() {
         return rb.getString("botao.cancelar");
+    }
+    
+    /**
+     * Retorna o texto do botão Avaliar.
+     *
+     * @return Texto do botão Avaliar.
+     */
+    public static String obterBotaoAvaliar() {
+        return rb.getString("botao.avaliar");
     }
 
     /**

@@ -113,5 +113,16 @@ public class ListaSerieDAOLista implements ListaSerieDAO, Serializable {
             }
         }
     }
-    
+
+    @Override
+    public void avaliarListaSerie(int nota, ListaSerie listaSerie, Usuario usuarioAvaliador) {
+        
+         for (int i=0; i< listaDeListasSerie.size(); i++) {
+            if (listaDeListasSerie.get(i).getNome().equals(listaSerie.getNome())){      
+                listaDeListasSerie.get(i).setAvaliacao(nota, usuarioAvaliador);
+                salvarListaSeriesArquivo();
+            }
+        }  
+    }
+
 }
