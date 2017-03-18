@@ -54,6 +54,7 @@ public class TelaDetalhesLista {
     private GridBagConstraints gbc;
     private JButton btnCancelar;
     private JButton btnAvaliar;
+    private JButton btnComentar;
     private JTable tbSeries;
     private JLabel lbNomeLista;
     private JLabel lbNomeAutor;
@@ -61,6 +62,7 @@ public class TelaDetalhesLista {
     private JTextField txtNomeLista;
     private JTextField txtNomeAutor;
     private JTextField txtTags;
+    private JTable tbComentarios;
 
     
 
@@ -110,9 +112,36 @@ public class TelaDetalhesLista {
         DefaultTableModel modelo = new DefaultTableModel(lista.toArray(new String[lista.size()][]), titulosColunas);
         
         tbSeries = new JTable();
+        
         tbSeries.setModel(modelo);
-        tbSeries.setPreferredScrollableViewportSize(new Dimension(500, 70));
+        tbSeries.setPreferredScrollableViewportSize(new Dimension(950, 80));
         tbSeries.setFillsViewportHeight(true);
+    }
+    
+    private void construirTabelaComentarios() {
+        
+        Object[] titulosColunas = {
+            I18N.obterRotuloComentarios(),
+            I18N.obterRotuloAutor()
+        };
+        
+        List<String[]> lista = new ArrayList<>();
+        
+        for (int i=0; i < listaSerie.getComentarios().size(); i++) {
+            lista.add(new String[] {listaSerie.getComentarios().get(i).getComentario(), 
+                listaSerie.getComentarios().get(i).getUsuario().obterNome() + " ("  + ")"});
+        }
+        
+        // Modelo utilizado na Jtable de séries
+        DefaultTableModel modelo = new DefaultTableModel(lista.toArray(new String[lista.size()][]), titulosColunas);
+        
+        tbComentarios = new JTable();
+        
+        tbComentarios.setModel(modelo);
+        tbComentarios.setPreferredScrollableViewportSize(new Dimension(950, 100));
+        tbComentarios.setFillsViewportHeight(true);
+        tbComentarios.getColumnModel().getColumn(0).setPreferredWidth(1100);
+        tbComentarios.getColumnModel().getColumn(1).setPreferredWidth(200);
     }
 
     /**
@@ -138,6 +167,8 @@ public class TelaDetalhesLista {
     private void prepararComponentesEstadoInicial() {
         tbSeries.clearSelection();
         tbSeries.setEnabled(false);
+        tbComentarios.clearSelection();
+        tbComentarios.setEnabled(false);
         txtNomeLista.setEditable(false);
         txtNomeAutor.setEditable(false);
         txtTags.setEditable(false);
@@ -147,6 +178,7 @@ public class TelaDetalhesLista {
         txtNomeAutor.setText(listaSerie.getUsuario().obterNome());
         btnCancelar.setEnabled(true);
         btnAvaliar.setEnabled(true);
+        btnComentar.setEnabled(true);
     }
 
     /**
@@ -155,6 +187,7 @@ public class TelaDetalhesLista {
     private void prepararComponentesEstadoSelecaoSerie() {
         btnCancelar.setEnabled(true);
         btnAvaliar.setEnabled(true);
+        btnComentar.setEnabled(true);
     }
 
     /**
@@ -165,50 +198,64 @@ public class TelaDetalhesLista {
         construirTabela();
         
         JScrollPane scrollPaneTabela = new JScrollPane(tbSeries);
-        
+      
         adicionarComponente(scrollPaneTabela,
                 GridBagConstraints.CENTER,
                 GridBagConstraints.NONE,
                 0, 0, 4, 1);
-
+        
+        construirTabelaComentarios();
+        
+        JScrollPane scrollPaneTabelaComentarios = new JScrollPane(tbComentarios);
+      
+        if (!listaSerie.getComentarios().isEmpty()){
+        adicionarComponente(scrollPaneTabelaComentarios,
+                GridBagConstraints.CENTER,
+                GridBagConstraints.NONE,
+                1, 0, 4, 1);
+        }
+        
         lbNomeLista = new JLabel(I18N.obterRotuloListaTitulo());
         adicionarComponente(lbNomeLista,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
-                1, 0, 1, 1);
+                2, 0, 1, 1);
         
         txtNomeLista = new JTextField(25);
         adicionarComponente(txtNomeLista,
                 GridBagConstraints.LINE_START,
                 GridBagConstraints.HORIZONTAL,
-                1, 1, 3, 1);
+                2, 1, 3, 1);
         
         lbNomeAutor = new JLabel(I18N.obterRotuloListaAutor());
         adicionarComponente(lbNomeAutor,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
-                2, 0, 1, 1);
+                3, 0, 1, 1);
         
         txtNomeAutor = new JTextField(25);
         adicionarComponente(txtNomeAutor,
                 GridBagConstraints.LINE_START,
                 GridBagConstraints.HORIZONTAL,
-                2, 1, 3, 1);
+                3, 1, 3, 1);
         
         lbTag = new JLabel(I18N.obterRotuloListaTags());
         adicionarComponente(lbTag,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
-                3, 0, 1, 1);
+                4, 0, 1, 1);
         
         txtTags = new JTextField(25);
         adicionarComponente(txtTags,
                 GridBagConstraints.LINE_START,
                 GridBagConstraints.HORIZONTAL,
-                3, 1, 3, 1);        
+                4, 1, 3, 1);        
 
         btnAvaliar = new JButton(I18N.obterBotaoAvaliar(),
         GerenciadorDeImagens.EDITAR);
+        
+        btnComentar = new JButton(I18N.obterBotaoComentar(),
+        GerenciadorDeImagens.NOVO);
         
         btnCancelar = new JButton(I18N.obterBotaoCancelar(),
                 GerenciadorDeImagens.CANCELAR);
@@ -219,6 +266,7 @@ public class TelaDetalhesLista {
         
         if (sessaoUsuario.estahLogado() && !(listaSerie.getUsuario().obterLogin().equals(sessaoUsuario.obterUsuario().obterLogin()))){
             painelBotoes.add(btnAvaliar);
+            painelBotoes.add(btnComentar);
         }
         painelBotoes.add(btnCancelar);
 
@@ -257,6 +305,14 @@ public class TelaDetalhesLista {
             @Override
             public void actionPerformed(ActionEvent e) {
                 verificador = false;
+                janela.dispose();
+            }
+        });
+        
+        btnComentar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new TelaComentar(telaPrincipal, listaSerie).inicializar();
                 janela.dispose();
             }
         });
@@ -308,6 +364,7 @@ public class TelaDetalhesLista {
         
     public void atualiza(){
         construirTabela();
+        construirTabelaComentarios();
         prepararComponentesEstadoInicial();      
         janela.dispose();
         inicializar();

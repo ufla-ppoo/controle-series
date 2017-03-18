@@ -1,5 +1,6 @@
 package br.ufla.dcc.ppoo.dao;
 
+import br.ufla.dcc.ppoo.modelo.Comentario;
 import br.ufla.dcc.ppoo.modelo.ListaSerie;
 import br.ufla.dcc.ppoo.modelo.Usuario;
 import java.util.List;
@@ -23,4 +24,6 @@ public interface ListaSerieDAO {
     public void deletarListaSerie(String nome, Usuario usuario);
     
     public void avaliarListaSerie(int nota, ListaSerie listaSerie, Usuario usuarioAvaliador);
+    
+    public void setComentario(Comentario Comentario, ListaSerie listaSerie);
 }

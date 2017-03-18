@@ -374,6 +374,15 @@ public class I18N {
     public static String obterTituloTelaBuscarListas() {
         return rb.getString("tela.buscarlistas.titulo");
     }
+    
+    /**
+     * Retorna o título da tela Comentar.
+     *
+     * @return Título da tela Comentar.
+     */
+    public static String obterTituloTelaComentar() {
+        return rb.getString("tela.comentar.titulo");
+    }
        
     /**
      * Retorna o título da tela AvaliarListas.
@@ -501,6 +510,24 @@ public class I18N {
     public static String obterBotaoAvaliar() {
         return rb.getString("botao.avaliar");
     }
+    
+     /**
+     * Retorna o texto do botão Comentar.
+     *
+     * @return Texto do botão Comentar.
+     */
+    public static String obterBotaoComentar() {
+        return rb.getString("botao.comentar");
+    }
+
+    /**
+     * Retorna o texto do botão Enviar.
+     *
+     * @return Texto do botão Enviar.
+     */
+    public static String obterBotaoEnviar() {
+        return rb.getString("botao.enviar");
+    }
 
     /**
      * Retorna o texto do botão Salvar.
@@ -572,6 +599,24 @@ public class I18N {
      */
     public static String obterRotuloUsuarioNome() {
         return rb.getString("rotulo.usuario.nome");
+    }
+    
+    /**
+     * Retorna o texto do rótulo comentários.
+     *
+     * @return Texto do rótulo comentários.
+     */
+    public static String obterRotuloComentarios() {
+        return rb.getString("rotulo.lista.comentarios");
+    }
+    
+        /**
+     * Retorna o texto do rótulo autor.
+     *
+     * @return Texto do rótulo autor.
+     */
+    public static String obterRotuloAutor() {
+        return rb.getString("rotulo.comentario.autor");
     }
     
     public static String obterRotuloSerie() {

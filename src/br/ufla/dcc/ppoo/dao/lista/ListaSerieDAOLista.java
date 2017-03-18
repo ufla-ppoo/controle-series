@@ -2,6 +2,7 @@ package br.ufla.dcc.ppoo.dao.lista;
 
 import br.ufla.dcc.ppoo.dao.ListaSerieDAO;
 import br.ufla.dcc.ppoo.dao.SerieDAO;
+import br.ufla.dcc.ppoo.modelo.Comentario;
 import br.ufla.dcc.ppoo.modelo.ListaSerie;
 import br.ufla.dcc.ppoo.modelo.Usuario;
 import java.io.File;
@@ -123,6 +124,17 @@ public class ListaSerieDAOLista implements ListaSerieDAO, Serializable {
                 salvarListaSeriesArquivo();
             }
         }  
+    }
+
+    @Override
+    public void setComentario(Comentario Comentario, ListaSerie listaSerie) {
+        
+        for (int i=0; i< listaDeListasSerie.size(); i++) {
+            if (listaDeListasSerie.get(i).getNome().equals(listaSerie.getNome())){      
+                listaDeListasSerie.get(i).setComentario(Comentario);
+                salvarListaSeriesArquivo();
+            }
+        } 
     }
 
 }

@@ -4,6 +4,7 @@ import br.ufla.dcc.ppoo.dao.ListaSerieDAO;
 import br.ufla.dcc.ppoo.dao.SerieDAO;
 import br.ufla.dcc.ppoo.dao.lista.ListaSerieDAOLista;
 import br.ufla.dcc.ppoo.dao.lista.SerieDAOLista;
+import br.ufla.dcc.ppoo.modelo.Comentario;
 import br.ufla.dcc.ppoo.modelo.ListaSerie;
 import br.ufla.dcc.ppoo.modelo.Serie;
 import br.ufla.dcc.ppoo.modelo.Usuario;
@@ -54,6 +55,10 @@ public class GerenciadorListaSeries {
     
     public void avaliarListaSerie(int nota, ListaSerie listaSerie, Usuario usuarioAvaliador){
         repositorioListaSerie.avaliarListaSerie(nota, listaSerie, usuarioAvaliador);
+    }
+    
+    public void setComentario(Comentario comentario, ListaSerie listaSerie){
+        repositorioListaSerie.setComentario(comentario, listaSerie);
     }
 
 }

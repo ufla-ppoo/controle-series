@@ -17,6 +17,7 @@ public class ListaSerie implements Serializable, Comparable<ListaSerie> {
     List<Serie> series;
     private int pontos = 0;
     List<Usuario> avaliadores;
+    List<Comentario> comentarios;
 
     public ListaSerie(String nome, boolean visivel, String palavrasChave, Usuario usuario, List<Serie> series) {
         this.nome = nome;
@@ -25,6 +26,7 @@ public class ListaSerie implements Serializable, Comparable<ListaSerie> {
         this.usuario = usuario;
         this.series = series;
         avaliadores = new ArrayList<Usuario>();
+        comentarios = new ArrayList<Comentario>();
     }
 
     public String getNome() {
@@ -101,5 +103,15 @@ public class ListaSerie implements Serializable, Comparable<ListaSerie> {
         
         return 0;        
     }
+
+    public List<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentario(Comentario comentario) {
+        comentarios.add(comentario);
+    }
+    
+    
     
 }
