@@ -5,12 +5,11 @@ import java.util.ArrayList;
 
 /**
  * Representa uma série do sistema.
- * 
+ *
  * @author Breno
  */
-
 public class Serie implements Serializable {
-    
+
     private String titulo;
     private String genero;
     private String anoLancamento;
@@ -18,19 +17,16 @@ public class Serie implements Serializable {
     private String elenco;
     private Usuario usuario;
 
-    public Serie(String titulo, String genero, String anoLancamento, String numeroDeTemporadas,String elenco, Usuario usuario) {
+    public Serie(String titulo, String genero, String anoLancamento, String numeroDeTemporadas, String elenco, Usuario usuario) {
         this.titulo = titulo;
         this.genero = genero;
         this.anoLancamento = anoLancamento;
         this.numeroDeTemporadas = numeroDeTemporadas;
-        this.elenco=elenco;
+        this.elenco = elenco;
         this.usuario = usuario;
     }
 
-    
-    
     // Métodos Getters e Setters
-    
     public String getTitulo() {
         return titulo;
     }
@@ -70,8 +66,8 @@ public class Serie implements Serializable {
     public void setElenco(String elenco) {
         this.elenco = elenco;
     }
-    
-    public Usuario getUsuario(){
+
+    public Usuario getUsuario() {
         return usuario;
     }
 }

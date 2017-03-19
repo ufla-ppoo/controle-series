@@ -2,7 +2,7 @@ package br.ufla.dcc.ppoo.gui;
 
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
-import br.ufla.dcc.ppoo.modelo.ListaSerie;
+import br.ufla.dcc.ppoo.modelo.Usuario;
 import br.ufla.dcc.ppoo.servicos.GerenciadorListaSeries;
 import br.ufla.dcc.ppoo.servicos.GerenciadorUsuarios;
 import br.ufla.dcc.ppoo.util.Utilidades;
@@ -23,11 +23,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * Classe que representa a Tela de Pesquisa das Listas de Séries.
+ * Classe que representa a Tela de Pesquisa de Usuários.
  *
  * @author Breno
  */
-public class TelaBuscarListas {
+public class TelaBuscarUsuarios {
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
@@ -49,7 +49,7 @@ public class TelaBuscarListas {
      *
      * @param telaPrincipal Referência da tela principal.
      */
-    public TelaBuscarListas(TelaPrincipal telaPrincipal) {
+    public TelaBuscarUsuarios(TelaPrincipal telaPrincipal) {
         this.gerenciadorUsuarios = new GerenciadorUsuarios();
         this.telaPrincipal = telaPrincipal;
         gerenciadorListaSeries = new GerenciadorListaSeries();
@@ -119,24 +119,21 @@ public class TelaBuscarListas {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                List<ListaSerie> lista = new ArrayList<>();
+                List<Usuario> lista = new ArrayList<>();
 
-                // Faz a pesquisa das listas com o conteúdo digitado na busca e salva em uma lista
-                gerenciadorListaSeries.getListaDeListaSeriePublicas().stream().forEach((s) -> {
-                    if (s.getNome().contains(txtBusca.getText()) || s.getPalavrasChave().contains(txtBusca.getText())) {
-
+                gerenciadorUsuarios.getListadeListaUsuarios().stream().forEach((s) -> {
+                    if (s.obterNome().contains(txtBusca.getText())) {
                         lista.add(s);
                     }
                 });
 
                 if (lista.isEmpty()) {
                     new Utilidades().msgErro("Nenhum resultado encontrado!");
-                } else {
-                    // ordena as listas por pontos
-                    Collections.sort(lista);
-                    new TelaListasPublicas(telaPrincipal, lista).inicializar();
-                    janela.dispose();
 
+                } else {
+                    Collections.sort(lista);
+                    new TelaPerfisUsuarios(telaPrincipal, lista).inicializar();
+                    janela.dispose();
                 }
             }
         });
@@ -154,7 +151,7 @@ public class TelaBuscarListas {
      */
     private void construirTela() {
         janela = new JDialog();
-        janela.setTitle(I18N.obterTituloTelaBuscarListas());
+        janela.setTitle(I18N.obterTituloTelaBuscarUsuarios());
         layout = new GridBagLayout();
         gbc = new GridBagConstraints();
         janela.setLayout(layout);

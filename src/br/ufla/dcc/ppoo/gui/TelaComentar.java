@@ -1,11 +1,9 @@
 package br.ufla.dcc.ppoo.gui;
 
-import static br.ufla.dcc.ppoo.gui.TelaDetalhesLista.verificador;
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
 import br.ufla.dcc.ppoo.modelo.Comentario;
 import br.ufla.dcc.ppoo.modelo.ListaSerie;
-import br.ufla.dcc.ppoo.modelo.Usuario;
 import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
 import br.ufla.dcc.ppoo.servicos.GerenciadorListaSeries;
 import br.ufla.dcc.ppoo.servicos.GerenciadorUsuarios;
@@ -16,20 +14,15 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import javafx.print.Collation;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 /**
- * Classe que representa a Tela de Autenticação (login no sistema)
+ * Classe que representa a Tela de Comentário.
  *
  * @author Breno
  */
@@ -53,7 +46,7 @@ public class TelaComentar {
     /**
      * Constrói a tela de autenticação guardando a referência da tela principal
      * e criando o gerenciador de usuários.
-     * 
+     *
      * @param telaPrincipal Referência da tela principal.
      */
     public TelaComentar(TelaPrincipal telaPrincipal, ListaSerie listaSerie) {
@@ -102,7 +95,6 @@ public class TelaComentar {
                 GridBagConstraints.NONE,
                 0, 1, 1, 1);
 
-
         btnEnviar = new JButton(I18N.obterBotaoEnviar(),
                 GerenciadorDeImagens.OK);
 
@@ -120,39 +112,31 @@ public class TelaComentar {
     }
 
     /**
-     * Retorna um novo usuário a partir do login e senha passados.
-     * 
-     * @return Usuário criado.
-     */
-//    private Usuario carregarUsuario() {
-//        return new Usuario(txtLogin.getText(), txtSenha.getPassword());
-//    }
-
-    /**
      * Configura os eventos da tela.
      */
     private void configurarEventosTela() {
-        
+
         btnEnviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (txtComentario.getText().isEmpty()){
+                if (txtComentario.getText().isEmpty()) {
                     new Utilidades().msgErro("O campo não pode estar vazio!");
-                } else { 
-                    
-                    if (txtComentario.getText().length() > 140){
+                } else {
+
+                    if (txtComentario.getText().length() > 75) {
                         new Utilidades().msgErro("Limite de caracteres atingido!");
-                    
+
                     } else {
-                    
-                    Comentario comentario = new Comentario(txtComentario.getText(), SessaoUsuario.obterInstancia().obterUsuario());
-                    gerenciadorListaSeries.setComentario(comentario, listaSerie);
-                    janela.dispose();
+
+                        Comentario comentario = new Comentario(txtComentario.getText(), SessaoUsuario.obterInstancia().obterUsuario());
+                        gerenciadorListaSeries.setComentario(comentario, listaSerie);
+                        new Utilidades().msgInformacao("Comentário efetuado com sucesso!");
+                        janela.dispose();
                     }
-                } 
+                }
             }
         });
-        
+
         btnCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

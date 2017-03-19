@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 
 /**
  * Classe que representa a tela de Cadastro de Usuários
- * 
+ *
  * @author Breno
  */
 public class TelaCadastroUsuario {
@@ -39,18 +39,20 @@ public class TelaCadastroUsuario {
     private JLabel lbNome;
     private JLabel lbLogin;
     private JLabel lbSenha;
+    private JLabel lbEmail;
     private JLabel lbConfirmarSenha;
     private JTextField txtNome;
     private JTextField txtLogin;
+    private JTextField txtEmail;
     private JPasswordField txtSenha;
     private JPasswordField txtConfirmarSenha;
     private JButton btnSalvar;
     private JButton btnCancelar;
 
     /**
-     * Constrói a tela de Cadastro de Usuários guardando a referência da tela 
+     * Constrói a tela de Cadastro de Usuários guardando a referência da tela
      * principal e criando o gerenciador de usuários.
-     * 
+     *
      * @param telaPrincipal Referência da tela principal.
      */
     public TelaCadastroUsuario(TelaPrincipal telaPrincipal) {
@@ -59,7 +61,7 @@ public class TelaCadastroUsuario {
         gerenciadorUsuarios.RecuperarUsuariosArquivo();
 
     }
-    
+
     /**
      * Inicializa a tela, construindo seus componentes, configurando os eventos
      * e, ao final, exibe a tela.
@@ -103,17 +105,23 @@ public class TelaCadastroUsuario {
                 GridBagConstraints.NONE,
                 1, 0, 1, 1);
 
+        lbEmail = new JLabel(I18N.obterRotuloUsuarioEmail());
+        adicionarComponente(lbEmail,
+                GridBagConstraints.LINE_END,
+                GridBagConstraints.NONE,
+                2, 0, 1, 1);
+
         lbSenha = new JLabel(I18N.obterRotuloUsuarioSenha());
         adicionarComponente(lbSenha,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
-                2, 0, 1, 1);
+                3, 0, 1, 1);
 
         lbConfirmarSenha = new JLabel(I18N.obterRotuloUsuarioConfirmarSenha());
         adicionarComponente(lbConfirmarSenha,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
-                3, 0, 1, 1);
+                4, 0, 1, 1);
 
         txtNome = new JTextField(35);
         adicionarComponente(txtNome,
@@ -127,17 +135,23 @@ public class TelaCadastroUsuario {
                 GridBagConstraints.NONE,
                 1, 1, 1, 1);
 
+        txtEmail = new JTextField(25);
+        adicionarComponente(txtEmail,
+                GridBagConstraints.LINE_START,
+                GridBagConstraints.NONE,
+                2, 1, 1, 1);
+
         txtSenha = new JPasswordField(10);
         adicionarComponente(txtSenha,
                 GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE,
-                2, 1, 1, 1);
+                3, 1, 1, 1);
 
         txtConfirmarSenha = new JPasswordField(10);
         adicionarComponente(txtConfirmarSenha,
                 GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE,
-                3, 1, 1, 1);
+                4, 1, 1, 1);
 
         btnSalvar = new JButton(I18N.obterBotaoSalvar(),
                 GerenciadorDeImagens.OK);
@@ -152,18 +166,19 @@ public class TelaCadastroUsuario {
         adicionarComponente(painelBotoes,
                 GridBagConstraints.CENTER,
                 GridBagConstraints.NONE,
-                4, 0, 2, 1);
+                5, 0, 2, 1);
     }
 
     /**
      * Retorna um novo usuário a partir do login, nome e senha passados.
-     * 
+     *
      * @return Usuário criado.
      */
     private Usuario carregarUsuario() {
         return new Usuario(txtLogin.getText(),
                 txtSenha.getPassword(),
-                txtNome.getText());
+                txtNome.getText(),
+                txtEmail.getText());
     }
 
     /**
@@ -174,6 +189,7 @@ public class TelaCadastroUsuario {
         txtLogin.setText("");
         txtSenha.setText("");
         txtConfirmarSenha.setText("");
+        txtEmail.setText("");
         txtNome.requestFocus();
     }
 
@@ -199,8 +215,11 @@ public class TelaCadastroUsuario {
 
                     gerenciadorUsuarios.cadastrarUsuario(carregarUsuario());
                     gerenciadorUsuarios.SalvarUsuariosArquivo();
+
                     Utilidades.msgInformacao(I18N.obterSucessoCadastroUsuario());
-                    limparTela();
+
+                    janela.dispose();
+
                 } catch (Exception ex) {
                     Utilidades.msgErro(ex.getMessage());
                 }
@@ -219,7 +238,7 @@ public class TelaCadastroUsuario {
         layout = new GridBagLayout();
         gbc = new GridBagConstraints();
         janela.setLayout(layout);
-        adicionarComponentes();        
+        adicionarComponentes();
         janela.pack();
     }
 

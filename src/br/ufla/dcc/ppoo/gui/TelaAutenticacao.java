@@ -30,7 +30,7 @@ public class TelaAutenticacao {
     private final TelaPrincipal telaPrincipal;
     // referência para o gerenciador de usuários
     private final GerenciadorUsuarios gerenciadorUsuarios;
-            
+
     // componentes da tela
     private JDialog janela;
     private GridBagLayout layout;
@@ -45,7 +45,7 @@ public class TelaAutenticacao {
     /**
      * Constrói a tela de autenticação guardando a referência da tela principal
      * e criando o gerenciador de usuários.
-     * 
+     *
      * @param telaPrincipal Referência da tela principal.
      */
     public TelaAutenticacao(TelaPrincipal telaPrincipal) {
@@ -126,7 +126,7 @@ public class TelaAutenticacao {
 
     /**
      * Retorna um novo usuário a partir do login e senha passados.
-     * 
+     *
      * @return Usuário criado.
      */
     private Usuario carregarUsuario() {

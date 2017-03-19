@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Classe que representa a camada de negócios de cadastro de usuários. Permite
  * cadastrar e autenticar um usuário.
- * 
+ *
  * @author Breno
  */
 public class GerenciadorUsuarios implements Serializable {
@@ -22,7 +22,7 @@ public class GerenciadorUsuarios implements Serializable {
     private final SessaoUsuario sessaoUsuario;
 
     /**
-     * Constroi o gerenciador de usuários, inicializando as camadas de acesso a 
+     * Constroi o gerenciador de usuários, inicializando as camadas de acesso a
      * dados e de sessão.
      */
     public GerenciadorUsuarios() {
@@ -34,21 +34,21 @@ public class GerenciadorUsuarios implements Serializable {
 
     /**
      * Tenta autenticar o usuário passado no sistema.
-     * 
+     *
      * @param usuario Usuário a ser autenticado
-     * @throws Exception Exceção gerada caso o usuário não possa ser autenticado,
-     * ou seja, usuário não existe ou senha incorreta.
+     * @throws Exception Exceção gerada caso o usuário não possa ser
+     * autenticado, ou seja, usuário não existe ou senha incorreta.
      */
     public void autenticarUsuario(Usuario usuario) throws Exception {
-        Usuario usuarioCadastrado = 
-                repositorioUsuario.obterUsuarioPeloLogin(usuario.obterLogin());
-        
+        Usuario usuarioCadastrado
+                = repositorioUsuario.obterUsuarioPeloLogin(usuario.obterLogin());
+
         sessaoUsuario.alterarUsuario(usuarioCadastrado, usuario.obterSenha());
     }
 
     /**
      * Cadastra o usuário passado no sistema.
-     * 
+     *
      * @param usuario Usuário a ser cadastrado.
      * @throws Exception Exceção gerada caso o usuário já esteja cadastrado.
      */
@@ -59,13 +59,33 @@ public class GerenciadorUsuarios implements Serializable {
         }
         repositorioUsuario.adicionarUsuario(usuario);
     }
-    
-    public void SalvarUsuariosArquivo (){
-        repositorioUsuario.SalvarUsuariosArquivo();
+
+    /**
+     * Faz a persistência de Usuários em um arquivo binário.
+     */
+    public void SalvarUsuariosArquivo() {
+        repositorioUsuario.salvarUsuariosArquivo();
     }
-    
-    public void RecuperarUsuariosArquivo(){
-        repositorioUsuario.RecuperarUsuariosArquivo();
+
+    /**
+     * Recuperar os dados persistidos no arquivo binário.
+     */
+    public void RecuperarUsuariosArquivo() {
+        repositorioUsuario.recuperarUsuariosArquivo();
     }
-    
+
+    /**
+     * Retorna a lista de Usuários cadastrados.
+     */
+    public List<Usuario> getListadeListaUsuarios() {
+        return repositorioUsuario.getListaDeUsuarios();
+    }
+
+    /**
+     * Adiciona uma pontuação aos pontos do Usuário.
+     */
+    public void setPontuacao(int pontuacao, Usuario usuario) {
+        repositorioUsuario.setPontuacao(pontuacao, usuario);
+    }
+
 }

@@ -47,7 +47,7 @@ public class I18N {
     public static String obterMenuInicio() {
         return rb.getString("menu.inicio");
     }
-    
+
     /**
      * Retorna o texto do menu Listas.
      *
@@ -55,6 +55,15 @@ public class I18N {
      */
     public static String obterMenuListas() {
         return rb.getString("menu.listas");
+    }
+
+    /**
+     * Retorna o texto do menu Usuarios.
+     *
+     * @return Texto do menu Usuarios.
+     */
+    public static String obterMenuUsuarios() {
+        return rb.getString("menu.usuarios");
     }
 
     /**
@@ -83,8 +92,8 @@ public class I18N {
     public static String obterMenuMinhasSeries() {
         return rb.getString("menu.inicio.minhas_series");
     }
-    
-     /**
+
+    /**
      * Retorna o texto do menu Minhas Listas.
      *
      * @return Texto do menu Minhas Listas.
@@ -92,8 +101,8 @@ public class I18N {
     public static String obterMenuMinhasListas() {
         return rb.getString("menu.inicio.minhas_listas");
     }
-    
-    public static String obterMenuPesquisarListas(){
+
+    public static String obterMenuPesquisarListas() {
         return rb.getString("menu.listas.pesquisar_listas");
     }
 
@@ -236,25 +245,25 @@ public class I18N {
      * Retorna o texto da mensagem de dados vazios.
      *
      * @return Texto da mensagem de de dados vazios.
-     */    
+     */
     public static String obterErroDadosInvalidos() {
         return rb.getString("erro.usuario.dados_invalidos");
     }
-    
-     /**
+
+    /**
      * Retorna o texto da mensagem de titulos iguais.
      *
      * @return Texto da mensagem de de titulos iguais.
-     */    
+     */
     public static String obterErroTitulosIguais() {
         return rb.getString("erro.serie.titulos_iguais");
     }
-    
+
     /**
      * Retorna o texto da mensagem de lista já avaliada.
      *
      * @return Texto da mensagem de de lista já avaliada.
-     */    
+     */
     public static String obterErroListaJaAvaliada() {
         return rb.getString("erro.lista.ja_avaliada");
     }
@@ -267,46 +276,66 @@ public class I18N {
     public static String obterSucessoCadastroUsuario() {
         return rb.getString("sucesso.usuario.cadastro");
     }
-    
+
     public static String obterSucessoCadastroListaSerie() {
         return rb.getString("sucesso.lista.cadastro");
     }
-    
+
     public static String obterSucessoImportarListaSerie() {
         return rb.getString("sucesso.lista.importar");
     }
-    
+
+    public static String obterErroImportarListaSerie() {
+        return rb.getString("erro.lista.importar");
+    }
+
+    public static String obterErroPoucasSeries() {
+        return rb.getString("erro.lista.poucas-series");
+    }
+
+    public static String obterErroNomesIguais() {
+        return rb.getString("erro.lista.iguais");
+    }
+
+    public static String obterErroPalavrasChave() {
+        return rb.getString("erro.lista.palavras-chave");
+    }
+
     /**
      * Retorna o texto da mensagem de cadastro de série efetuado com sucesso.
      *
-     * @return Retorna o texto da mensagem de cadastro de série efetuado com sucesso.
+     * @return Retorna o texto da mensagem de cadastro de série efetuado com
+     * sucesso.
      */
     public static String obterSucessoCadastroSerie() {
         return rb.getString("sucesso.serie.cadastro");
     }
-    
-     /**
+
+    /**
      * Retorna o texto da mensagem de remoção de série efetuado com sucesso.
      *
-     * @return Retorna o texto da mensagem de remoção de série efetuado com sucesso.
+     * @return Retorna o texto da mensagem de remoção de série efetuado com
+     * sucesso.
      */
     public static String obterSucessoDeletarSerie() {
         return rb.getString("sucesso.serie.deletar");
     }
-    
+
     /**
-     * Retorna o texto da mensagem de remoção de ListaSérie efetuado com sucesso.
+     * Retorna o texto da mensagem de remoção de ListaSérie efetuado com
+     * sucesso.
      *
-     * @return Retorna o texto da mensagem de remoção de ListaSérie efetuado com sucesso.
+     * @return Retorna o texto da mensagem de remoção de ListaSérie efetuado com
+     * sucesso.
      */
     public static String obterSucessoDeletarListaSerie() {
         return rb.getString("sucesso.lista.deletar");
     }
-    
+
     /**
      * Retorna o texto da mensagem de ListaSérie avaliada com sucesso.
      *
-     * @return Retorna o texto da mensagem  de ListaSérie avaliada com sucesso.
+     * @return Retorna o texto da mensagem de ListaSérie avaliada com sucesso.
      */
     public static String obterSucessoListaAvaliada() {
         return rb.getString("sucesso.lista.avaliada");
@@ -315,7 +344,8 @@ public class I18N {
     /**
      * Retorna o texto da mensagem de edicao de serie efetuada com sucesso.
      *
-     * @return Retorna o texto da mensagem de edicao de serie efetuada com sucesso.
+     * @return Retorna o texto da mensagem de edicao de serie efetuada com
+     * sucesso.
      */
     public static String obterSucessoAlterarSerie() {
         return rb.getString("sucesso.serie.alterada");
@@ -365,7 +395,7 @@ public class I18N {
     public static String obterTituloTelaAutenticacao() {
         return rb.getString("tela.autenticacao.titulo");
     }
-    
+
     /**
      * Retorna o título da tela pequisar por listas.
      *
@@ -374,7 +404,16 @@ public class I18N {
     public static String obterTituloTelaBuscarListas() {
         return rb.getString("tela.buscarlistas.titulo");
     }
-    
+
+    /**
+     * Retorna o título da tela pequisar por usuarios.
+     *
+     * @return Título da tela pequisar por usuarios.
+     */
+    public static String obterTituloTelaBuscarUsuarios() {
+        return rb.getString("tela.buscarusuarios.titulo");
+    }
+
     /**
      * Retorna o título da tela Comentar.
      *
@@ -383,7 +422,7 @@ public class I18N {
     public static String obterTituloTelaComentar() {
         return rb.getString("tela.comentar.titulo");
     }
-       
+
     /**
      * Retorna o título da tela AvaliarListas.
      *
@@ -392,9 +431,7 @@ public class I18N {
     public static String obterTituloTelaAvaliarListas() {
         return rb.getString("tela.avaliar_listas.titulo");
     }
-       
-        
-        
+
     public static String obterTituloTelaDetalhes() {
         return rb.getString("tela.detalhes.titulo");
     }
@@ -416,7 +453,7 @@ public class I18N {
     public static String obterTituloTelaMinhasSeries() {
         return rb.getString("tela.minhasseries.titulo");
     }
-    
+
     /**
      * Retorna o título da tela de Minhas Séries.
      *
@@ -425,14 +462,19 @@ public class I18N {
     public static String obterTituloTelaMinhasListas() {
         return rb.getString("tela.minhaslistas.titulo");
     }
-    
+
     public static String obterTituloTelaCadastrarLista() {
         return rb.getString("tela.lista.cadastrar");
     }
-        
+
     public static String obterTituloTelaImportarLista() {
         return rb.getString("tela.lista.importar");
     }
+
+    public static String obterTituloTelaEditarLista() {
+        return rb.getString("tela.lista.editar");
+    }
+
     /**
      * Retorna o título da tela de Cadastro de Usuários.
      *
@@ -441,10 +483,8 @@ public class I18N {
     public static String obterTituloTelaCadastrarUsuario() {
         return rb.getString("tela.cadastrousuario.titulo");
     }
-    
-    
 
-     /**
+    /**
      * Retorna o título da tela de Listas Publicas.
      *
      * @return Título da tela de Listas Publicas.
@@ -452,7 +492,16 @@ public class I18N {
     public static String obterTituloTelaListasPublicas() {
         return rb.getString("tela.listas.publicas");
     }
-    
+
+    /**
+     * Retorna o título da tela de Listas Usuarios.
+     *
+     * @return Título da tela de Listas Usuarios.
+     */
+    public static String obterTituloTelaUsuarios() {
+        return rb.getString("tela.usuarios");
+    }
+
     /**
      * Retorna o texto do rótulo login do usuário.
      *
@@ -460,6 +509,24 @@ public class I18N {
      */
     public static String obterRotuloUsuarioLogin() {
         return rb.getString("rotulo.usuario.login");
+    }
+
+    /**
+     * Retorna o texto do rótulo de pontuação do usuário.
+     *
+     * @return Texto do rótulo de pontuação do usuário.
+     */
+    public static String obterRotuloUsuarioPontuacao() {
+        return rb.getString("rotulo.usuario.pontuacao");
+    }
+
+    /**
+     * Retorna o texto do rótulo email do usuário.
+     *
+     * @return Texto do rótulo email do usuário.
+     */
+    public static String obterRotuloUsuarioEmail() {
+        return rb.getString("rotulo.usuario.email");
     }
 
     /**
@@ -488,7 +555,7 @@ public class I18N {
     public static String obterBotaoEntrar() {
         return rb.getString("botao.entrar");
     }
-    
+
     public static String obterBotaoVisualizar() {
         return rb.getString("botao.visualizar");
     }
@@ -501,7 +568,7 @@ public class I18N {
     public static String obterBotaoCancelar() {
         return rb.getString("botao.cancelar");
     }
-    
+
     /**
      * Retorna o texto do botão Avaliar.
      *
@@ -510,8 +577,8 @@ public class I18N {
     public static String obterBotaoAvaliar() {
         return rb.getString("botao.avaliar");
     }
-    
-     /**
+
+    /**
      * Retorna o texto do botão Comentar.
      *
      * @return Texto do botão Comentar.
@@ -537,7 +604,7 @@ public class I18N {
     public static String obterBotaoSalvar() {
         return rb.getString("botao.salvar");
     }
-    
+
     /**
      * Retorna o texto do botão Importar.
      *
@@ -546,6 +613,7 @@ public class I18N {
     public static String obterBotaoImportar() {
         return rb.getString("botao.importar");
     }
+
     /**
      * Retorna o texto do botão Buscar.
      *
@@ -555,7 +623,6 @@ public class I18N {
         return rb.getString("botao.buscar");
     }
 
-
     /**
      * Retorna o texto do botão Novo.
      *
@@ -564,7 +631,7 @@ public class I18N {
     public static String obterBotaoNovo() {
         return rb.getString("botao.novo");
     }
-    
+
     /**
      * Retorna o texto do botão Novo.
      *
@@ -600,7 +667,7 @@ public class I18N {
     public static String obterRotuloUsuarioNome() {
         return rb.getString("rotulo.usuario.nome");
     }
-    
+
     /**
      * Retorna o texto do rótulo comentários.
      *
@@ -609,8 +676,8 @@ public class I18N {
     public static String obterRotuloComentarios() {
         return rb.getString("rotulo.lista.comentarios");
     }
-    
-        /**
+
+    /**
      * Retorna o texto do rótulo autor.
      *
      * @return Texto do rótulo autor.
@@ -618,11 +685,15 @@ public class I18N {
     public static String obterRotuloAutor() {
         return rb.getString("rotulo.comentario.autor");
     }
-    
+
     public static String obterRotuloSerie() {
         return rb.getString("rotulo.lista.serie");
     }
-    
+
+    public static String obterRotuloListaSerie() {
+        return rb.getString("rotulo.lista");
+    }
+
     /**
      * Retorna o texto do rótulo título da série.
      *
@@ -631,18 +702,25 @@ public class I18N {
     public static String obterRotuloSerieTitulo() {
         return rb.getString("rotulo.serie.titulo");
     }
-    
+
     /**
-     * Retorna o texto do rótulo Pesquisar.
+     * Retorna o texto do rótulo Pesquisar Listas.
      *
-     * @return Texto do rótulo Pesquisar.
+     * @return Texto do rótulo Pesquisar Listas.
      */
     public static String obterRotuloListaTitulo() {
         return rb.getString("rotulo.lista.titulo");
     }
-        
 
-    
+    /**
+     * Retorna o texto do rótulo Pesquisar Usuarios.
+     *
+     * @return Texto do rótulo Pesquisar Usuarios.
+     */
+    public static String obterRotuloUsuariosTitulo() {
+        return rb.getString("rotulo.usuarios.titulo");
+    }
+
     public static String obterRotuloListaPrivado() {
         return rb.getString("rotulo.lista.privado");
     }
@@ -650,11 +728,11 @@ public class I18N {
     public static String obterRotuloListaAutor() {
         return rb.getString("rotulo.lista.autor");
     }
-    
+
     public static String obterRotuloListaTags() {
         return rb.getString("rotulo.lista.tags");
     }
-    
+
     /**
      * Retorna o texto do rótulo número de temporadas da série.
      *
@@ -699,5 +777,5 @@ public class I18N {
     public static String obterRotuloUsuarioConfirmarSenha() {
         return rb.getString("rotulo.usuario.confirmar_senha");
     }
-    
+
 }

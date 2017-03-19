@@ -3,7 +3,6 @@ package br.ufla.dcc.ppoo.gui;
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
 import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
-import br.ufla.dcc.ppoo.servicos.GerenciadorUsuarios;
 import br.ufla.dcc.ppoo.util.Utilidades;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,18 +11,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JRootPane;
 
 /**
  * Classe que representa a Tela Principal
@@ -43,7 +35,8 @@ public class TelaPrincipal {
     // tela de lista de séries
     private final TelaMinhasListas TelaMinhasListas;
     //private final TelaListasPublicas telaListasPublicas;
-    private final TelaBuscarListas telaBusca;
+    private final TelaBuscarListas telaBuscaListas;
+    private final TelaBuscarUsuarios telaBuscarUsuarios;
 
     // janela da tela principal
     private JFrame janela;
@@ -54,6 +47,7 @@ public class TelaPrincipal {
     private JMenu menuIdioma;
     private JMenu menuAjuda;
     private JMenu menuListas;
+    private JMenu menuUsuarios;
 
     // Submenus da tela
     private JMenuItem menuEntrar;
@@ -64,7 +58,8 @@ public class TelaPrincipal {
     private JMenuItem menuSobre;
     private JMenuItem menuMinhasListas;
     private JMenuItem menuPesquisarListas;
-    
+    private JMenuItem menuPesquisarUsuarios;
+
     // Itens de menu específicos para usuários logados no sistema    
     private JMenuItem menuLogout;
     private JMenuItem menuMinhasSeries;
@@ -78,8 +73,8 @@ public class TelaPrincipal {
         telaCadastroMinhasSeries = new TelaCadastroMinhasSeries(this);
         sessaoUsuario = SessaoUsuario.obterInstancia();
         TelaMinhasListas = new TelaMinhasListas(this);
-        //telaListasPublicas = new TelaListasPublicas(this);
-        telaBusca = new TelaBuscarListas(this);
+        telaBuscaListas = new TelaBuscarListas(this);
+        telaBuscarUsuarios = new TelaBuscarUsuarios(this);
     }
 
     /**
@@ -131,28 +126,27 @@ public class TelaPrincipal {
                 telaAutenticacao.inicializar();
             }
         });
-        
+
         menuMinhasListas.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 TelaMinhasListas.inicializar();
             }
         });
-        
-//        menuPesquisarListas.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                telaListasPublicas.inicializar();
-//            }
-//        });
 
         menuPesquisarListas.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                telaBusca.inicializar();
+                telaBuscaListas.inicializar();
             }
         });
 
+        menuPesquisarUsuarios.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                telaBuscarUsuarios.inicializar();
+            }
+        });
 
         menuLogout.addActionListener(new ActionListener() {
             @Override
@@ -192,14 +186,37 @@ public class TelaPrincipal {
             }
         });
     }
-    
+
     private void construirMenuListas() {
+
         menuListas = new JMenu(I18N.obterMenuListas());
         menuListas.setMnemonic(I18N.obterMnemonicoMenuInicio());
+
         menuPesquisarListas = new JMenuItem(I18N.obterMenuPesquisarListas(), GerenciadorDeImagens.MINHAS_SERIES);
 
         menuListas.add(menuPesquisarListas);
+        
+        if (sessaoUsuario.estahLogado()) {
+            menuListas.add(menuMinhasListas);
+        }
+
         menuPrincipal.add(menuListas);
+    }
+
+    /**
+     * Constroi o menu de Usuários.
+     */
+    private void construirMenuUsuarios() {
+
+        menuUsuarios = new JMenu(I18N.obterMenuUsuarios());
+        menuUsuarios.setMnemonic(I18N.obterMnemonicoMenuInicio());
+
+        menuPesquisarUsuarios = new JMenuItem(I18N.obterMenuPesquisarListas(), GerenciadorDeImagens.MINHAS_SERIES);
+        
+        if (sessaoUsuario.estahLogado()) {
+            menuUsuarios.add(menuPesquisarUsuarios);
+            menuPrincipal.add(menuUsuarios); 
+        }
     }
 
     /**
@@ -213,16 +230,15 @@ public class TelaPrincipal {
         menuLogout = new JMenuItem(I18N.obterMenuLogout(), GerenciadorDeImagens.LOGOUT);
         menuMinhasSeries = new JMenuItem(I18N.obterMenuMinhasSeries(), GerenciadorDeImagens.MINHAS_SERIES);
         menuMinhasListas = new JMenuItem(I18N.obterMenuMinhasListas(), GerenciadorDeImagens.MINHAS_SERIES);
-        
 
         if (!sessaoUsuario.estahLogado()) {
             menuInicio.add(menuEntrar);
             menuInicio.add(menuCadastrarUsuario);
-            
+
         } else {
-            // Aqui você poderá adicionar outros itens de menu, se necessário.
+
             menuInicio.add(menuMinhasSeries);
-            menuInicio.add(menuMinhasListas);
+            menuListas.add(menuMinhasListas);
             menuInicio.add(menuLogout);
         }
 
@@ -261,17 +277,13 @@ public class TelaPrincipal {
      */
     private void construirMenuUsuario() {
         menuPrincipal = new JMenuBar();
-        construirMenuInicio();
-
-        if (sessaoUsuario.estahLogado()) {
-            // Aqui você poderá adicionar outros menus adequados
-            // ao seu projeto que serão exibidos quando o
-            // usuário estiver logado no sistema.
-        }
         
+        construirMenuInicio();
         construirMenuListas();
+        construirMenuUsuarios();
         construirMenuIdioma();
         construirMenuAjuda();
+        
         janela.setJMenuBar(menuPrincipal);
     }
 
@@ -279,7 +291,12 @@ public class TelaPrincipal {
      * Constrói a tela.
      */
     private void construirTela() {
-        janela = new JFrame(I18N.obterTituloTelaPrincipal());
+        // Adiciona o nome do usuário no cabeçalho do programa.
+        if (sessaoUsuario.estahLogado()) {
+            janela = new JFrame(I18N.obterTituloTelaPrincipal() + " - " + sessaoUsuario.obterUsuario().obterNome());
+        } else {
+            janela = new JFrame(I18N.obterTituloTelaPrincipal());
+        }
         janela.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         janela.setResizable(true);
         janela.setMinimumSize(new Dimension(500, 500));
@@ -293,16 +310,11 @@ public class TelaPrincipal {
 
         janela.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        // Permite que apenas o botão de fechar esteja disponível na janela.        
-        //janela.setUndecorated(true);
-        //janela.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
-        
         // Seta background com logo
         janela.setContentPane(new JLabel(GerenciadorDeImagens.LOGO));
         janela.setBackground(Color.red);
         janela.setIconImage(Toolkit.getDefaultToolkit().getImage("icon.png"));
-        
-        
+
         janela.setVisible(true);
     }
 

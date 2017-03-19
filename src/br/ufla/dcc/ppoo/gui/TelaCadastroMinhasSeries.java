@@ -5,7 +5,6 @@ import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
 import br.ufla.dcc.ppoo.modelo.Serie;
 import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
 import br.ufla.dcc.ppoo.servicos.GerenciadorSeries;
-import br.ufla.dcc.ppoo.servicos.GerenciadorUsuarios;
 import br.ufla.dcc.ppoo.util.Utilidades;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -30,12 +29,12 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Classe que representa a tela Minhas Séries
+ * Classe que representa a Tela de Cadastro de Séries.
  *
  * @author Breno
  */
 public class TelaCadastroMinhasSeries {
-    
+
     private final GerenciadorSeries gerenciadorSeries;
     private final SessaoUsuario sessaoUsuario;
     private String titulo;
@@ -45,7 +44,6 @@ public class TelaCadastroMinhasSeries {
     private final TelaPrincipal telaPrincipal;
 
     // componentes da tela
-    private int opsalve = 0;
     private JDialog janela;
     private GridBagLayout layout;
     private GridBagConstraints gbc;
@@ -65,8 +63,6 @@ public class TelaCadastroMinhasSeries {
     private JTextField txtAno;
     private JTextField txtGenero;
     private JTextArea taElenco;
-
-    
 
     /**
      * Constrói a tela de autenticação guardando a referência da tela principal.
@@ -88,28 +84,28 @@ public class TelaCadastroMinhasSeries {
         construirTela();
         configurarEventosTela();
         exibirTela();
-        
+
     }
 
     /**
      * Constrói a janela tratando internacionalização, componentes e layout.
      */
     private void construirTabela() {
-        
+
         Object[] titulosColunas = {
             I18N.obterRotuloSerieTitulo(),
             I18N.obterRotuloSerieGenero()
         };
 
         List<String[]> lista = new ArrayList<>();
-        
-         // Add o titulo e o genero na lista criada utilizando expressão lambda do java 8
+
+        // Add o titulo e o genero na lista criada utilizando expressão lambda do java 8
         gerenciadorSeries.getListaSerie(sessaoUsuario.obterUsuario()).stream().forEach((s) -> {
-            lista.add(new String[]{s.getTitulo(),s.getGenero()});
+            lista.add(new String[]{s.getTitulo(), s.getGenero()});
         });
-        
+
         DefaultTableModel modelo = new DefaultTableModel(lista.toArray(new String[lista.size()][]), titulosColunas);
-        
+
         tbSeries = new JTable();
         tbSeries.setModel(modelo);
         tbSeries.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -139,13 +135,14 @@ public class TelaCadastroMinhasSeries {
     private void prepararComponentesEstadoInicial() {
         tbSeries.clearSelection();
         tbSeries.setEnabled(true);
+        tbSeries.setDefaultEditor(Object.class, null);
 
         txtTitulo.setText("");
         txtNumTemporadas.setText("");
         txtAno.setText("");
         txtGenero.setText("");
         taElenco.setText("");
-        
+
         txtTitulo.setEditable(false);
         txtNumTemporadas.setEditable(false);
         txtAno.setEditable(false);
@@ -182,7 +179,6 @@ public class TelaCadastroMinhasSeries {
     private void prepararComponentesEstadoNovaSerie() {
         tbSeries.clearSelection();
         tbSeries.setEnabled(true);
-        this.opsalve=1;
         txtTitulo.setText("");
         txtNumTemporadas.setText("");
         txtAno.setText("");
@@ -207,7 +203,6 @@ public class TelaCadastroMinhasSeries {
      */
     private void prepararComponentesEstadoEditouSerie() {
         tbSeries.setEnabled(false);
-        this.opsalve=2;
         txtTitulo.setEditable(true);
         txtNumTemporadas.setEditable(true);
         txtAno.setEditable(true);
@@ -328,18 +323,17 @@ public class TelaCadastroMinhasSeries {
      * Trata a selação de séries na grade.
      */
     private void selecionouSerie() {
-          
-        List<Serie> lista = new ArrayList<>();       
+
+        List<Serie> lista = new ArrayList<>();
         lista = gerenciadorSeries.getListaSerie(sessaoUsuario.obterUsuario());
-        
+
         Serie serie = lista.get(tbSeries.getSelectedRow());
         txtTitulo.setText(serie.getTitulo());
         txtNumTemporadas.setText(serie.getNumeroDeTemporadas());
         txtAno.setText(serie.getAnoLancamento());
         txtGenero.setText(serie.getGenero());
-        taElenco.setText(serie.getElenco());        
+        taElenco.setText(serie.getElenco());
     }
-    
 
     /**
      * Configura os eventos da tela.
@@ -372,31 +366,30 @@ public class TelaCadastroMinhasSeries {
         btnSalvarSerie.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
                 Serie serie = pegaSerie();
-                
-                try{                                                       
-                    if(camposEstaoVazios(serie)){
+
+                try {
+                    if (camposEstaoVazios(serie)) {
                         throw new Exception(I18N.obterErroDadosInvalidos());
-                            } else{
-                                if (nomeEhIgual(serie) && confereSerie){
-                                    throw new Exception(I18N.obterErroTitulosIguais());
-                                }
-                                else{
-                                    if (confereSerie){
-                                        gerenciadorSeries.cadastrarSerie(serie);
-                                        gerenciadorSeries.SalvarSeriesArquivo();
-                                        Utilidades.msgInformacao(I18N.obterSucessoCadastroSerie());
-                                    } else {
-                                        gerenciadorSeries.editarSerie(serie, titulo);
-                                        gerenciadorSeries.SalvarSeriesArquivo();
-                                        Utilidades.msgInformacao(I18N.obterSucessoAlterarSerie());
-                                    }
-                                }
+                    } else {
+                        if (nomeEhIgual(serie) && confereSerie) {
+                            throw new Exception(I18N.obterErroTitulosIguais());
+                        } else {
+                            if (confereSerie) {
+                                gerenciadorSeries.cadastrarSerie(serie);
+                                gerenciadorSeries.SalvarSeriesArquivo();
+                                Utilidades.msgInformacao(I18N.obterSucessoCadastroSerie());
+                            } else {
+                                gerenciadorSeries.editarSerie(serie, titulo);
+                                gerenciadorSeries.SalvarSeriesArquivo();
+                                Utilidades.msgInformacao(I18N.obterSucessoAlterarSerie());
+                            }
+                        }
                     }
                 } catch (Exception ex) {
-                    Utilidades.msgErro(ex.getMessage());  
-                }    
+                    Utilidades.msgErro(ex.getMessage());
+                }
                 atualiza(); // metodo criado para evitar repetição como foi notificado pelo prof. no feedback
             }
         });
@@ -404,10 +397,10 @@ public class TelaCadastroMinhasSeries {
         btnNovaSerie.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               tbSeries.disable();
-               confereSerie = true;
-               construirTabela(); 
-               prepararComponentesEstadoNovaSerie();
+                tbSeries.disable();
+                confereSerie = true;
+                construirTabela();
+                prepararComponentesEstadoNovaSerie();
             }
         });
 
@@ -447,45 +440,60 @@ public class TelaCadastroMinhasSeries {
         janela.setVisible(true);
         janela.setResizable(false);
     }
-    
-        private Serie pegaSerie() {
+
+    /**
+     * Cria um novo objeto Serie com os dados preenchidos nos campos.
+     */
+    private Serie pegaSerie() {
         try {
             return new Serie(txtTitulo.getText(),
-            txtGenero.getText(),
-            txtAno.getText(),
-            txtNumTemporadas.getText(),
-            taElenco.getText(),        
-            sessaoUsuario.obterUsuario());
-            }catch (Exception ex) {
-                return null;                
-        }  
+                    txtGenero.getText(),
+                    txtAno.getText(),
+                    txtNumTemporadas.getText(),
+                    taElenco.getText(),
+                    sessaoUsuario.obterUsuario());
+        } catch (Exception ex) {
+            return null;
+        }
     }
-        
-    public void atualiza(){
+
+    /**
+     * Atualiza a tela.
+     */
+    public void atualiza() {
         construirTabela();
-        prepararComponentesEstadoInicial();      
+        prepararComponentesEstadoInicial();
         janela.dispose();
         inicializar();
     }
-    
+
+    /**
+     * Checa se algum campo está vazio.
+     */
     private boolean camposEstaoVazios(Serie serie) {
-        if (serie.getTitulo().isEmpty()|| serie.getAnoLancamento().isEmpty() ||
-                       serie.getElenco().isEmpty() || serie.getNumeroDeTemporadas().isEmpty()
-                         || serie.getGenero().isEmpty()){
+        if (serie.getTitulo().isEmpty() || serie.getAnoLancamento().isEmpty()
+                || serie.getElenco().isEmpty() || serie.getNumeroDeTemporadas().isEmpty()
+                || serie.getGenero().isEmpty()) {
             return true;
-        } else return false;
+        } else {
+            return false;
+        }
     }
-    
+
+    /**
+     * Verifica se o nome da série é repetido.
+     */
     private boolean nomeEhIgual(Serie serie) {
+
         List<Serie> lista = new ArrayList<>();
         lista = gerenciadorSeries.getListaSerie(sessaoUsuario.obterUsuario());
-        
-            for (Serie serie1 : lista) {
-                if (serie1.getTitulo().equals(serie.getTitulo())){
+
+        for (Serie serie1 : lista) {
+            if (serie1.getTitulo().equals(serie.getTitulo())) {
                 return true;
-                }
             }
-            
+        }
+
         return false;
     }
 }

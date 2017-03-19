@@ -5,7 +5,6 @@ import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
 import br.ufla.dcc.ppoo.modelo.Serie;
 import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
 import br.ufla.dcc.ppoo.servicos.GerenciadorSeries;
-import br.ufla.dcc.ppoo.util.Utilidades;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -29,15 +28,14 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Classe que representa a tela Minhas Séries
+ * Classe que representa a tela Minhas Séries.
  *
  * @author Breno
  */
 public class TelaMinhasSeries {
-    
+
     private final GerenciadorSeries gerenciadorSeries;
     private final SessaoUsuario sessaoUsuario;
-    private String titulo;
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
@@ -63,8 +61,6 @@ public class TelaMinhasSeries {
     private JTextField txtGenero;
     private JTextArea taElenco;
 
-    
-
     /**
      * Constrói a tela de autenticação guardando a referência da tela principal.
      *
@@ -84,28 +80,28 @@ public class TelaMinhasSeries {
         construirTela();
         configurarEventosTela();
         exibirTela();
-        
+
     }
 
     /**
      * Constrói a janela tratando internacionalização, componentes e layout.
      */
     private void construirTabela() {
-        
+
         Object[] titulosColunas = {
             I18N.obterRotuloSerieTitulo(),
             I18N.obterRotuloSerieGenero()
         };
 
         List<String[]> lista = new ArrayList<>();
-        
-         // Add o titulo e o genero na lista criada utilizando expressão lambda do java 8
+
+        // Add o titulo e o genero na lista criada utilizando expressão lambda do java 8
         gerenciadorSeries.getListaSerie(sessaoUsuario.obterUsuario()).stream().forEach((s) -> {
-            lista.add(new String[]{s.getTitulo(),s.getGenero()});
+            lista.add(new String[]{s.getTitulo(), s.getGenero()});
         });
-        
+
         DefaultTableModel modelo = new DefaultTableModel(lista.toArray(new String[lista.size()][]), titulosColunas);
-        
+
         tbSeries = new JTable();
         tbSeries.setModel(modelo);
         tbSeries.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -135,7 +131,8 @@ public class TelaMinhasSeries {
     private void prepararComponentesEstadoInicial() {
         tbSeries.clearSelection();
         tbSeries.setEnabled(true);
-        
+        tbSeries.setDefaultEditor(Object.class, null);
+
         btnCancelar.setEnabled(true);
     }
 
@@ -146,7 +143,6 @@ public class TelaMinhasSeries {
 
         btnCancelar.setEnabled(true);
     }
-
 
     /**
      * Adiciona os componentes da tela tratando layout e internacionalização
@@ -159,14 +155,13 @@ public class TelaMinhasSeries {
                 GridBagConstraints.NONE,
                 0, 0, 4, 1);
 
-
         btnCancelar = new JButton(I18N.obterBotaoCancelar(),
                 GerenciadorDeImagens.CANCELAR);
 
         prepararComponentesEstadoInicial();
 
         JPanel painelBotoes = new JPanel();
-        
+
         painelBotoes.add(btnCancelar);
 
         adicionarComponente(painelBotoes,
@@ -179,19 +174,18 @@ public class TelaMinhasSeries {
      * Trata a selação de séries na grade.
      */
     private void selecionouSerie() {
-          
-        List<Serie> lista = new ArrayList<>();       
+
+        List<Serie> lista = new ArrayList<>();
         lista = gerenciadorSeries.getListaSerie(sessaoUsuario.obterUsuario());
-        
+
         Serie serie = lista.get(tbSeries.getSelectedRow());
         txtTitulo.setText(serie.getTitulo());
         txtNumTemporadas.setText(serie.getNumeroDeTemporadas());
         txtAno.setText(serie.getAnoLancamento());
         txtGenero.setText(serie.getGenero());
         taElenco.setText(serie.getElenco());
-        
+
     }
-    
 
     /**
      * Configura os eventos da tela.
@@ -236,24 +230,4 @@ public class TelaMinhasSeries {
         janela.setVisible(true);
         janela.setResizable(false);
     }
-    
-        private Serie pegaSerie() {
-        try {
-            return new Serie(txtTitulo.getText(),
-            txtGenero.getText(),
-            txtAno.getText(),
-            txtNumTemporadas.getText(),
-            taElenco.getText(),        
-            sessaoUsuario.obterUsuario());
-            }catch (Exception ex) {
-                return null;                
-        }  
-    }
-        
-    public void atualiza(){
-        construirTabela();
-        prepararComponentesEstadoInicial();      
-        janela.dispose();
-        inicializar();
-    }    
 }

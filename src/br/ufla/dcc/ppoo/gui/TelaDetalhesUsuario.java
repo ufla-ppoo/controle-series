@@ -3,10 +3,10 @@ package br.ufla.dcc.ppoo.gui;
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
 import br.ufla.dcc.ppoo.modelo.ListaSerie;
+import br.ufla.dcc.ppoo.modelo.Usuario;
 import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
 import br.ufla.dcc.ppoo.servicos.GerenciadorListaSeries;
 import br.ufla.dcc.ppoo.servicos.GerenciadorSeries;
-import br.ufla.dcc.ppoo.util.Utilidades;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -23,23 +23,22 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Classe que representa a tela Minhas Listas de Séries.
+ * Classe que representa a Tela de detalhes de determinado Usuário.
  *
  * @author Breno
  */
-public class TelaMinhasListas {
+public class TelaDetalhesUsuario {
 
-    private final TelaCadastroLista telaCadastroLista;
     private final GerenciadorSeries gerenciadorSeries;
     private final GerenciadorListaSeries gerenciadorListaSeries;
     private final SessaoUsuario sessaoUsuario;
+    private Usuario usuario;
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
@@ -48,34 +47,29 @@ public class TelaMinhasListas {
     private JDialog janela;
     private GridBagLayout layout;
     private GridBagConstraints gbc;
-    private JButton btnNovaLista;
-    private JButton btnEditarLista;
-    private JButton btnDeletarSLista;
-    private JButton btnDetalhesLista;
     private JButton btnCancelar;
+    private JButton btnDetalhes;
     private JTable tbSeries;
-    private JLabel lbTitulo;
-    private JLabel lbNumTemporadas;
-    private JLabel lbAno;
-    private JLabel lbGenero;
-    private JLabel lbElenco;
-    private JTextField txtTitulo;
-    private JTextField txtNumTemporadas;
-    private JTextField txtAno;
-    private JTextField txtGenero;
-    private JTextArea taElenco;
+    private JLabel lbNomeUsuario;
+    private JLabel lbPontuacaoUsuario;
+    private JLabel lbEmail;
+    private JTextField txtNomeUsuario;
+    private JTextField txtPontuacaoUsuario;
+    private JTextField txtEmail;
 
     /**
      * Constrói a tela de autenticação guardando a referência da tela principal.
      *
      * @param telaPrincipal Referência da tela principal.
      */
-    public TelaMinhasListas(TelaPrincipal telaPrincipal) {
-        telaCadastroLista = new TelaCadastroLista(telaPrincipal);
+    public TelaDetalhesUsuario(TelaPrincipal telaPrincipal, Usuario usuario) {
+        this.usuario = usuario;
         this.telaPrincipal = telaPrincipal;
         sessaoUsuario = SessaoUsuario.obterInstancia();
         gerenciadorSeries = new GerenciadorSeries();
         gerenciadorListaSeries = new GerenciadorListaSeries();
+        gerenciadorSeries.RecuperarSeriesArquivo();
+        gerenciadorListaSeries.recuperarListaSeriesArquivo();
     }
 
     /**
@@ -86,6 +80,7 @@ public class TelaMinhasListas {
         construirTela();
         configurarEventosTela();
         exibirTela();
+
     }
 
     /**
@@ -93,26 +88,28 @@ public class TelaMinhasListas {
      */
     private void construirTabela() {
 
-        Object[] titulosColunas = {
-            I18N.obterRotuloListaTitulo(),
-            I18N.obterRotuloListaAutor()
+        Object[] tituloColuna = {
+            I18N.obterRotuloListaSerie()
         };
 
         List<String[]> lista = new ArrayList<>();
 
-        // Add o titulo e o genero na lista criada utilizando expressão lambda do java 8
-        gerenciadorListaSeries.getListadeListaSerie(sessaoUsuario.obterUsuario()).stream().forEach((s) -> {
-            lista.add(new String[]{s.getNome(), s.getUsuario().obterNome()});
-        });
+        for (int i = 0; i < gerenciadorListaSeries.getListadeListaSerie(usuario).size(); i++) {
+
+            // Adiciona apenas as listas públicas
+            if (!gerenciadorListaSeries.getListadeListaSerie(usuario).get(i).isVisivel()) {
+                lista.add(new String[]{gerenciadorListaSeries.getListadeListaSerie(usuario).get(i).getNome()});
+            }
+        }
 
         // Modelo utilizado na Jtable de séries
-        DefaultTableModel modelo = new DefaultTableModel(lista.toArray(new String[lista.size()][]), titulosColunas);
+        DefaultTableModel modelo = new DefaultTableModel(lista.toArray(new String[lista.size()][]), tituloColuna);
 
         tbSeries = new JTable();
-        tbSeries.setModel(modelo);
-        tbSeries.setPreferredScrollableViewportSize(new Dimension(500, 70));
-        tbSeries.setFillsViewportHeight(true);
 
+        tbSeries.setModel(modelo);
+        tbSeries.setPreferredScrollableViewportSize(new Dimension(400, 80));
+        tbSeries.setFillsViewportHeight(true);
     }
 
     /**
@@ -140,58 +137,85 @@ public class TelaMinhasListas {
         tbSeries.setEnabled(true);
         tbSeries.setDefaultEditor(Object.class, null);
 
-        btnNovaLista.setEnabled(true);
-        btnEditarLista.setEnabled(false);
-        btnDeletarSLista.setEnabled(false);
-        btnDetalhesLista.setEnabled(false);
+        txtNomeUsuario.setEditable(false);
+        txtPontuacaoUsuario.setEditable(false);
+        txtEmail.setEditable(false);
+
+        txtNomeUsuario.setText(usuario.obterNome());
+        txtEmail.setText(usuario.getEmail());
+        txtPontuacaoUsuario.setText(Integer.toString(usuario.getPontuacao()));
         btnCancelar.setEnabled(true);
+        btnDetalhes.setEnabled(false);
     }
 
     /**
      * Trata o estado da tela para seleção de séries
      */
-    private void prepararComponentesEstadoSelecaoSerie() {
-
-        btnNovaLista.setEnabled(true);
-        btnEditarLista.setEnabled(true);
-        btnDeletarSLista.setEnabled(true);
-        btnDetalhesLista.setEnabled(true);
-        btnCancelar.setEnabled(true);
+    private void prepararComponentesEstadoSelecaoListaSerie() {
+        btnDetalhes.setEnabled(true);
     }
 
     /**
      * Adiciona os componentes da tela tratando layout e internacionalização
      */
     private void adicionarComponentes() {
+
+        lbNomeUsuario = new JLabel(I18N.obterRotuloUsuarioNome());
+        adicionarComponente(lbNomeUsuario,
+                GridBagConstraints.LINE_END,
+                GridBagConstraints.NONE,
+                0, 0, 1, 1);
+
+        txtNomeUsuario = new JTextField(25);
+        adicionarComponente(txtNomeUsuario,
+                GridBagConstraints.LINE_START,
+                GridBagConstraints.HORIZONTAL,
+                0, 1, 3, 1);
+
+        lbPontuacaoUsuario = new JLabel(I18N.obterRotuloUsuarioPontuacao());
+        adicionarComponente(lbPontuacaoUsuario,
+                GridBagConstraints.LINE_END,
+                GridBagConstraints.NONE,
+                1, 0, 1, 1);
+
+        txtPontuacaoUsuario = new JTextField(25);
+        adicionarComponente(txtPontuacaoUsuario,
+                GridBagConstraints.LINE_START,
+                GridBagConstraints.HORIZONTAL,
+                1, 1, 3, 1);
+
+        lbEmail = new JLabel(I18N.obterRotuloUsuarioEmail());
+        adicionarComponente(lbEmail,
+                GridBagConstraints.LINE_END,
+                GridBagConstraints.NONE,
+                2, 0, 1, 1);
+
+        txtEmail = new JTextField(25);
+        adicionarComponente(txtEmail,
+                GridBagConstraints.LINE_START,
+                GridBagConstraints.HORIZONTAL,
+                2, 1, 3, 1);
+
         construirTabela();
+
         JScrollPane scrollPaneTabela = new JScrollPane(tbSeries);
+
         adicionarComponente(scrollPaneTabela,
                 GridBagConstraints.CENTER,
                 GridBagConstraints.NONE,
-                0, 0, 4, 1);
+                3, 0, 4, 1);
 
-        btnNovaLista = new JButton(I18N.obterBotaoNovo(),
-                GerenciadorDeImagens.NOVO);
-
-        btnEditarLista = new JButton(I18N.obterBotaoEditar(),
+        btnDetalhes = new JButton(I18N.obterBotaoVisualizar(),
                 GerenciadorDeImagens.EDITAR);
-
-        btnDeletarSLista = new JButton(I18N.obterBotaoDeletar(),
-                GerenciadorDeImagens.DELETAR);
 
         btnCancelar = new JButton(I18N.obterBotaoCancelar(),
                 GerenciadorDeImagens.CANCELAR);
 
-        btnDetalhesLista = new JButton(I18N.obterBotaoVisualizar(),
-                GerenciadorDeImagens.SOBRE);
-
         prepararComponentesEstadoInicial();
 
         JPanel painelBotoes = new JPanel();
-        painelBotoes.add(btnNovaLista);
-        painelBotoes.add(btnDetalhesLista);
-        painelBotoes.add(btnEditarLista);
-        painelBotoes.add(btnDeletarSLista);
+
+        painelBotoes.add(btnDetalhes);
         painelBotoes.add(btnCancelar);
 
         adicionarComponente(painelBotoes,
@@ -203,14 +227,14 @@ public class TelaMinhasListas {
     /**
      * Trata a selação de séries na grade.
      */
-    private ListaSerie selecionouSerie() {
+    private ListaSerie selecionouListaSerie() {
 
-        int posicao = tbSeries.getSelectedRow();
+        List<ListaSerie> lista = new ArrayList<>(); // lista com todas as ListaSeries daquele usuario.     
+        lista = gerenciadorListaSeries.getListadeListaSerie(usuario);
 
-        List<ListaSerie> listaDeLista = gerenciadorListaSeries.getListadeListaSerie(sessaoUsuario.obterUsuario());
-        ListaSerie listaSerie = listaDeLista.get(posicao);
+        int indice = tbSeries.getSelectedRow(); // indices da ListaSerie selecionada.
 
-        return listaSerie;
+        return lista.get(indice);
     }
 
     /**
@@ -224,52 +248,22 @@ public class TelaMinhasListas {
             }
         });
 
-        btnDeletarSLista.addActionListener(new ActionListener() {
+        btnDetalhes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (Utilidades.msgConfirmacao(I18N.obterConfirmacaoDeletar())) {
-                    gerenciadorListaSeries.deletarListaSerie(selecionouSerie().getNome());
-                    Utilidades.msgInformacao(I18N.obterSucessoDeletarListaSerie());
-                    atualiza();
-                }
-
-            }
-        });
-
-        btnDetalhesLista.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ListaSerie listaParaMostrar = selecionouSerie();
-                new TelaDetalhesLista(telaPrincipal, listaParaMostrar).inicializar();
+                prepararComponentesEstadoSelecaoListaSerie();
+                new TelaDetalhesLista(telaPrincipal, selecionouListaSerie()).inicializar();
             }
         });
 
         tbSeries.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                prepararComponentesEstadoSelecaoSerie();
-                selecionouSerie();
+                prepararComponentesEstadoSelecaoListaSerie();
+                selecionouListaSerie();
             }
         });
 
-        btnNovaLista.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                telaCadastroLista.inicializar();
-                atualiza();
-            }
-        });
-
-        btnEditarLista.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                ListaSerie listaParaEditar = selecionouSerie();
-                new TelaEditarLista(telaPrincipal, listaParaEditar).inicializar();
-                atualiza();
-
-            }
-        });
     }
 
     /**
@@ -277,7 +271,7 @@ public class TelaMinhasListas {
      */
     private void construirTela() {
         janela = new JDialog();
-        janela.setTitle(I18N.obterTituloTelaMinhasListas());
+        janela.setTitle(I18N.obterTituloTelaDetalhes());
         layout = new GridBagLayout();
         gbc = new GridBagConstraints();
         janela.setLayout(layout);
@@ -294,15 +288,5 @@ public class TelaMinhasListas {
         janela.setModal(true);
         janela.setVisible(true);
         janela.setResizable(false);
-    }
-
-    /**
-     * Atualiza a tela.
-     */
-    public void atualiza() {
-        construirTabela();
-        prepararComponentesEstadoInicial();
-        janela.dispose();
-        inicializar();
     }
 }

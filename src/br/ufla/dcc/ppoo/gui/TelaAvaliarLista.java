@@ -1,10 +1,8 @@
 package br.ufla.dcc.ppoo.gui;
 
-import static br.ufla.dcc.ppoo.gui.TelaDetalhesLista.verificador;
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
 import br.ufla.dcc.ppoo.modelo.ListaSerie;
-import br.ufla.dcc.ppoo.modelo.Usuario;
 import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
 import br.ufla.dcc.ppoo.servicos.GerenciadorListaSeries;
 import br.ufla.dcc.ppoo.servicos.GerenciadorUsuarios;
@@ -15,28 +13,20 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JSlider;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
- * Classe que representa a Tela de Autenticação (login no sistema)
+ * Classe que representa a Tela de Avaliar determinada Lista
  *
  * @author Breno
  */
 public class TelaAvaliarLista {
-    
-    
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
@@ -53,13 +43,13 @@ public class TelaAvaliarLista {
     private JLabel lbCH;
     private JLabel lbSlider;
     private JSlider slider;
-    
+
     private ListaSerie listaSerie;
 
     /**
      * Constrói a tela de autenticação guardando a referência da tela principal
      * e criando o gerenciador de usuários.
-     * 
+     *
      * @param telaPrincipal Referência da tela principal.
      */
     public TelaAvaliarLista(TelaPrincipal telaPrincipal, ListaSerie listaSerie) {
@@ -108,19 +98,17 @@ public class TelaAvaliarLista {
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
                 0, 0, 1, 1);
-        
+
         slider = new JSlider(SwingConstants.HORIZONTAL, 1, 5, 3);
         slider.setMajorTickSpacing(1);
         slider.setPaintLabels(true);
         slider.setPaintTicks(true);
-        
+
         lbSlider = new JLabel(I18N.obterRotuloAvaliar());
         adicionarComponente(slider,
                 GridBagConstraints.LINE_END,
                 GridBagConstraints.NONE,
                 2, 0, 2, 1);
-        
-        
 
         btnAvaliar = new JButton(I18N.obterBotaoAvaliar(),
                 GerenciadorDeImagens.OK);
@@ -139,40 +127,27 @@ public class TelaAvaliarLista {
     }
 
     /**
-     * Retorna um novo usuário a partir do login e senha passados.
-     * 
-     * @return Usuário criado.
-     */
-//    private Usuario carregarUsuario() {
-//        return new Usuario(txtLogin.getText(), txtSenha.getPassword());
-//    }
-
-    /**
      * Configura os eventos da tela.
      */
     private void configurarEventosTela() {
-        
+
         btnCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 janela.dispose();
             }
         });
-        
+
         btnAvaliar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            if (listaSerie.usuarioJaAvaliou(sessaoUsuario.obterUsuario())){
-                verificador = false;
-                Utilidades.msgErro(I18N.obterErroListaJaAvaliada());
-            } else {
-                    gerenciadorListaSeries.avaliarListaSerie(slider.getValue(), listaSerie, sessaoUsuario.obterUsuario());
-                    Utilidades.msgInformacao(I18N.obterSucessoListaAvaliada());
-                    verificador = true;
-                    janela.dispose();
-                }
+
+                gerenciadorListaSeries.avaliarListaSerie(slider.getValue(), listaSerie, sessaoUsuario.obterUsuario());
+                Utilidades.msgInformacao(I18N.obterSucessoListaAvaliada());
+                janela.dispose();
+
             }
-            
+
         });
     }
 
@@ -199,7 +174,5 @@ public class TelaAvaliarLista {
         janela.setVisible(true);
         janela.setResizable(false);
     }
-    
+
 }
-
-

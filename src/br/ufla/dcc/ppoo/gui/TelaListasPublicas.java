@@ -1,14 +1,11 @@
 package br.ufla.dcc.ppoo.gui;
 
-import static br.ufla.dcc.ppoo.gui.TelaDetalhesLista.verificador;
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.imagens.GerenciadorDeImagens;
 import br.ufla.dcc.ppoo.modelo.ListaSerie;
-import br.ufla.dcc.ppoo.modelo.Serie;
 import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
 import br.ufla.dcc.ppoo.servicos.GerenciadorListaSeries;
 import br.ufla.dcc.ppoo.servicos.GerenciadorSeries;
-import br.ufla.dcc.ppoo.util.Utilidades;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -32,18 +29,17 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Classe que representa a tela de Listas Publicas
+ * Classe que representa a tela de Listas Públicas
  *
  * @author Breno
  */
 public class TelaListasPublicas {
+
     private final TelaCadastroLista telaCadastroLista;
     private final GerenciadorSeries gerenciadorSeries;
     private final GerenciadorListaSeries gerenciadorListaSeries;
     private final SessaoUsuario sessaoUsuario;
-    private String titulo;
     private List<ListaSerie> listaRecebida = new ArrayList<>();
-
 
     // referência para a tela principal
     private final TelaPrincipal telaPrincipal;
@@ -54,7 +50,7 @@ public class TelaListasPublicas {
     private GridBagConstraints gbc;
     private JButton btnVisualizarLista;
     private JButton btnCancelar;
-    private JButton btnImportarLista;
+
     private JTable tbSeries;
     private JLabel lbTitulo;
     private JLabel lbNumTemporadas;
@@ -66,8 +62,6 @@ public class TelaListasPublicas {
     private JTextField txtAno;
     private JTextField txtGenero;
     private JTextArea taElenco;
-
-    
 
     /**
      * Constrói a tela de autenticação guardando a referência da tela principal.
@@ -92,29 +86,28 @@ public class TelaListasPublicas {
         construirTela();
         configurarEventosTela();
         exibirTela();
-        
+
     }
 
     /**
      * Constrói a janela tratando internacionalização, componentes e layout.
      */
     private void construirTabela() {
-        
+
         Object[] titulosColunas = {
             I18N.obterRotuloListaTitulo(),
             I18N.obterRotuloListaAutor()
         };
-        
+
         List<String[]> lista = new ArrayList<>();
 
         // Add o titulo e o genero na lista criada utilizando expressão lambda do java 8
         listaRecebida.stream().forEach((s) -> {
-            lista.add(new String[]{s.getNome(),s.getUsuario().obterNome()});
-        });  
-        
-        
+            lista.add(new String[]{s.getNome(), s.getUsuario().obterNome()});
+        });
+
         DefaultTableModel modelo = new DefaultTableModel(lista.toArray(new String[lista.size()][]), titulosColunas);
-        
+
         tbSeries = new JTable();
         tbSeries.setModel(modelo);
         tbSeries.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -144,8 +137,8 @@ public class TelaListasPublicas {
     private void prepararComponentesEstadoInicial() {
         tbSeries.clearSelection();
         tbSeries.setEnabled(true);
+        tbSeries.setDefaultEditor(Object.class, null);
 
-        btnImportarLista.setEnabled(false);
         btnVisualizarLista.setEnabled(false);
         btnCancelar.setEnabled(true);
     }
@@ -155,7 +148,6 @@ public class TelaListasPublicas {
      */
     private void prepararComponentesEstadoSelecaoSerie() {
 
-        btnImportarLista.setEnabled(true);
         btnVisualizarLista.setEnabled(true);
         btnCancelar.setEnabled(true);
     }
@@ -171,24 +163,16 @@ public class TelaListasPublicas {
                 GridBagConstraints.NONE,
                 0, 0, 4, 1);
 
-
         btnVisualizarLista = new JButton(I18N.obterBotaoVisualizar(),
                 GerenciadorDeImagens.SOBRE);
 
         btnCancelar = new JButton(I18N.obterBotaoCancelar(),
                 GerenciadorDeImagens.CANCELAR);
-        
-        btnImportarLista = new JButton(I18N.obterBotaImportar(),
-        GerenciadorDeImagens.NOVO);
 
         prepararComponentesEstadoInicial();
 
         JPanel painelBotoes = new JPanel();
-        
-        if (sessaoUsuario.estahLogado()){
-            painelBotoes.add(btnImportarLista);
-        }
-        
+
         painelBotoes.add(btnVisualizarLista);
         painelBotoes.add(btnCancelar);
 
@@ -199,15 +183,16 @@ public class TelaListasPublicas {
     }
 
     /**
-     * Retorna a listaRecebida de série selecionada pelo usuario para ser visualizada na TelaDetalhesLista
+     * Retorna a listaRecebida de série selecionada pelo usuario para ser
+     * visualizada na TelaDetalhesLista
      */
     private ListaSerie selecionouSerie() {
-        
+
         int posicao = tbSeries.getSelectedRow();
-        
+
         ListaSerie lista = listaRecebida.get(posicao);
-        
-        return lista;       
+
+        return lista;
     }
 
     /**
@@ -220,26 +205,14 @@ public class TelaListasPublicas {
                 janela.dispose();
             }
         });
-        
+
         btnVisualizarLista.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListaSerie listaParaMostrar = selecionouSerie();
                 new TelaDetalhesLista(telaPrincipal, listaParaMostrar).inicializar();
-                
-                if (verificador == true){
-                    janela.dispose();
-                }
             }
         });
-        
-        btnImportarLista.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new TelaImportarLista(telaPrincipal, selecionouSerie()).inicializar();
-            }
-        });
-
 
         tbSeries.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -273,11 +246,4 @@ public class TelaListasPublicas {
         janela.setVisible(true);
         janela.setResizable(false);
     }
-        
-    public void atualiza(){
-        construirTabela();
-        prepararComponentesEstadoInicial();      
-        janela.dispose();
-        inicializar();
-    }    
 }
