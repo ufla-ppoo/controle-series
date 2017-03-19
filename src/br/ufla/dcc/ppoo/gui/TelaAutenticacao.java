@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 /**
  * Classe que representa a Tela de Autenticação (login no sistema)
  *
- * @author Paulo Jr. e Julio Alves
+ * @author Breno
  */
 public class TelaAutenticacao {
 

@@ -5,14 +5,16 @@ import br.ufla.dcc.ppoo.dao.lista.UsuarioDAOLista;
 import br.ufla.dcc.ppoo.i18n.I18N;
 import br.ufla.dcc.ppoo.modelo.Usuario;
 import br.ufla.dcc.ppoo.seguranca.SessaoUsuario;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Classe que representa a camada de negócios de cadastro de usuários. Permite
  * cadastrar e autenticar um usuário.
  * 
- * @author Paulo Jr. e Julio Alves
+ * @author Breno
  */
-public class GerenciadorUsuarios {
+public class GerenciadorUsuarios implements Serializable {
 
     // atributo utilizado como camada de acesso a dados do cadastro de usuários
     private final UsuarioDAO repositorioUsuario;
@@ -57,4 +59,13 @@ public class GerenciadorUsuarios {
         }
         repositorioUsuario.adicionarUsuario(usuario);
     }
+    
+    public void SalvarUsuariosArquivo (){
+        repositorioUsuario.SalvarUsuariosArquivo();
+    }
+    
+    public void RecuperarUsuariosArquivo(){
+        repositorioUsuario.RecuperarUsuariosArquivo();
+    }
+    
 }

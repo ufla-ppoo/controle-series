@@ -23,7 +23,7 @@ import javax.swing.JTextField;
 /**
  * Classe que representa a tela de Cadastro de Usuários
  * 
- * @author Paulo Jr. e Julio Alves
+ * @author Breno
  */
 public class TelaCadastroUsuario {
 
@@ -56,6 +56,8 @@ public class TelaCadastroUsuario {
     public TelaCadastroUsuario(TelaPrincipal telaPrincipal) {
         this.gerenciadorUsuarios = new GerenciadorUsuarios();
         this.telaPrincipal = telaPrincipal;
+        gerenciadorUsuarios.RecuperarUsuariosArquivo();
+
     }
     
     /**
@@ -196,6 +198,7 @@ public class TelaCadastroUsuario {
                     }
 
                     gerenciadorUsuarios.cadastrarUsuario(carregarUsuario());
+                    gerenciadorUsuarios.SalvarUsuariosArquivo();
                     Utilidades.msgInformacao(I18N.obterSucessoCadastroUsuario());
                     limparTela();
                 } catch (Exception ex) {
